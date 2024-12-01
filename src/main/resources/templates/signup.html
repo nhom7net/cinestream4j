@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Đăng ký</title>
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/auth.css" />
+</head>
+<body>
+<form method="post" action="/signup">
+    <h3>Đăng Ký</h3>
+    <div>
+        <label for="displayName">Tên hiển thị</label>
+        <input type="text" name="displayName" id="displayName" placeholder="Nhập tên hiển thị" required/>
+    </div>
+    <div>
+        <label for="username">Tên người dùng</label>
+        <input type="text" name="username" id="username" placeholder="Nhập tên hiển thị" required/>
+    </div>
+    <div>
+        <label for="email">Email</label>
+        <input type="text" name="email" id="email" placeholder="Nhập email" required/>
+    </div>
+    <div>
+        <label for="password">Mật khẩu</label>
+        <input type="password" name="password" id="password" placeholder="Nhập mật khẩu" required/>
+    </div>
+    <div>
+        <label for="confirm">Xác nhận mật khẩu</label>
+        <input type="password" name="confirmpassword" id="confirm" placeholder="Nhập lại mật khẩu" required/>
+    </div>
+
+    <p style="color:red">{{error}}</p>
+
+    <button>Đăng ký</button>
+
+    <a href="/login">Đăng nhập</a>
+</form>
+</body>
+</html>
