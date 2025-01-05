@@ -1,8 +1,5 @@
 package qnu.nhom7.cinestream4j.controllers;
 
-import com.fasterxml.jackson.core.JsonParser;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skhanal5.models.Filter;
 import com.skhanal5.models.SelectQuery;
@@ -14,9 +11,7 @@ import qnu.nhom7.cinestream4j.supabase.Supabase;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.LinkedHashMap;
-import java.util.Objects;
 
 @Controller
 public class IndexController {
@@ -43,7 +38,6 @@ public class IndexController {
                         .build())
                 .build();
 
-        // i hate java
         ArrayList response = this.client.getClient().executeSelect(query, ArrayList.class);
         LinkedHashMap<String, String> a = (LinkedHashMap<String, String>) response.get(0);
 

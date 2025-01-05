@@ -7,6 +7,7 @@ import lombok.Getter;
 @Getter
 public class Supabase {
     private final SpringSupabaseClient client;
+
     public Supabase() {
         client = SpringSupabaseClient.newInstance(ConnectionString.getSupabaseUrl(), ConnectionString.getServiceKey());
     }
