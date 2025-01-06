@@ -90,7 +90,7 @@ public class AuthController {
 
         UpdateQuery query = new UpdateQuery.UpdateQueryBuilder()
                 .from("profiles")
-                .update(Map.of("username", username), Map.of("full_name", displayName))
+                .update(Map.of("username", username, "full_name", displayName))
                 .filter(filter)
                 .build();
 
