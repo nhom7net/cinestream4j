@@ -1,7 +1,6 @@
 package qnu.nhom7.cinestream4j.controllers;
 
 import com.skhanal5.models.Filter;
-import com.skhanal5.models.SelectQuery;
 import com.skhanal5.models.UpdateQuery;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.HttpStatus;
@@ -29,7 +28,7 @@ public class AuthController {
     }
 
     @GetMapping("/login")
-    public String login(@RequestParam(required=false, defaultValue = "") String error, Model model) {
+    public String login(@RequestParam(required = false, defaultValue = "") String error, Model model) {
         var e = "";
         if (Objects.equals(error, "invalid_credentials")) e = "Email hoặc mật khẩu bị sai!";
         model.addAttribute("error", e);
@@ -37,7 +36,7 @@ public class AuthController {
     }
 
     @GetMapping("/signup")
-    public String signup(@RequestParam(required=false, defaultValue = "") String error, Model model) {
+    public String signup(@RequestParam(required = false, defaultValue = "") String error, Model model) {
         var e = switch (error) {
             case "weak-password" -> "Mật khẩu phải từ 8 kí tự trở lên!";
             case "confirm-failed" -> "Mật khẩu không trùng khớp!";
@@ -91,7 +90,7 @@ public class AuthController {
 
         UpdateQuery query = new UpdateQuery.UpdateQueryBuilder()
                 .from("profiles")
-                .update(Map.of("username", username), Map.of("full_name", displayName))
+                .update(Map.of("username", username, "full_name", displayName))
                 .filter(filter)
                 .build();
 
