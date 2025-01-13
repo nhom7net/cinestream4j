@@ -24,7 +24,45 @@
         .section-title {
             margin-top: 20px;
             font-weight: bold;
-            font-size: 1.1rem;
+            font-size: 1.5rem;
+            color: #333;
+        }
+
+        .cast-card {
+            text-align: center;
+            cursor: pointer;
+        }
+
+        .cast-card img {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+            margin-bottom: 10px;
+
+        }
+
+        .movie-poster {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .production-company-logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-right: 10px;
+            border-radius: 5px;
+            transition: transform 0.2s ease-in-out;
+        }
+
+        .production-company-logo:hover {
+            transform: scale(1.1);
+        }
+
+        .production-company-info {
+            font-size: 0.9rem;
         }
     </style>
 </head>
@@ -33,6 +71,14 @@
 <div class="container mt-5">
     <div id="movie-container" class="row">
         <!-- Movie Details sẽ được hiển thị ở đây -->
+    </div>
+
+    <!-- Cast Section -->
+    <div class="mt-5">
+        <h2 class="section-title text-center">🎭 Danh Sách Diễn Viên</h2>
+        <div id="cast-container" class="row">
+            <!-- Danh sách diễn viên sẽ hiển thị ở đây -->
+        </div>
     </div>
 </div>
 
@@ -45,6 +91,7 @@
 
     // Gọi API lấy thông tin chi tiết phim
     const apiUrl = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}&language=en-US&append_to_response=videos`;
+    const castApiUrl = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${API_KEY}&language=en-US`;
 
     async function fetchMovieDetails() {
         try {
@@ -61,43 +108,103 @@
         }
     }
 
+    async function fetchCast() {
+        try {
+            const response = await fetch(castApiUrl);
+            if (!response.ok) {
+                throw new Error('Không thể lấy danh sách diễn viên');
+            }
+
+            const data = await response.json();
+            displayCast(data.cast);
+        } catch (error) {
+            console.error('Lỗi khi lấy danh sách diễn viên:', error);
+            document.getElementById('cast-container').innerHTML = '<p class="text-danger">Không thể tải danh sách diễn viên.</p>';
+        }
+    }
+
     // Hiển thị thông tin phim
     function displayMovieDetails(movie) {
         const container = document.getElementById('movie-container');
+
+        // Tạo danh sách các hãng phim với liên kết điều hướng
+        const productionCompanies = movie.production_companies?.map(company => `
+        <div class="d-flex align-items-center mb-2">
+            <a href="/company?companyId=${company.id}" target="_blank" style="text-decoration: none; color: inherit;">
+                <img src="https://image.tmdb.org/t/p/w200${company.logo_path}"
+                     alt="${company.name}"
+                     onerror="this.onerror=null;this.src='https://via.placeholder.com/50';"
+                     class="production-company-logo">
+                <strong>${company.name}</strong>
+                <small>(${company.origin_country || 'N/A'})</small>
+            </a>
+        </div>
+    `).join('') || '<p>Không có thông tin công ty sản xuất.</p>';
 
         // Lấy video trailer đầu tiên nếu có
         const trailer = movie.videos?.results.find(video => video.type === "Trailer" && video.site === "YouTube");
 
         container.innerHTML = `
-            <div class="col-md-4">
-                <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" class="movie-poster">
+        <div class="col-md-4">
+            <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" class="movie-poster">
+            <div class="mt-4">
+                <h5>Công ty sản xuất:</h5>
+                ${productionCompanies}
             </div>
-            <div class="col-md-8 movie-details">
-                <h1>${movie.title}</h1>
-                <p><strong>Khẩu hiệu:</strong> ${movie.tagline || 'Không có khẩu hiệu.'}</p>
-                <p><strong>Ngày phát hành:</strong> ${movie.release_date}</p>
-                <p><strong>Mô tả:</strong> ${movie.overview || 'Không có mô tả.'}</p>
-                <p class="rating"><strong>Đánh giá:</strong> ${movie.vote_average} / 10 (${movie.vote_count} lượt)</p>
-                <p><strong>Thể loại:</strong> ${movie.genres.map(genre => genre.name).join(', ')}</p>
-                <p><strong>Thời lượng:</strong> ${movie.runtime} phút</p>
-                <p><strong>Ngôn ngữ gốc:</strong> ${movie.original_language.toUpperCase()}</p>
-                <p><strong>Ngôn ngữ sử dụng:</strong> ${movie.spoken_languages.map(lang => lang.english_name).join(', ')}</p>
-                <p><strong>Quốc gia sản xuất:</strong> ${movie.production_countries.map(country => country.name).join(', ')}</p>
-                <p><strong>Công ty sản xuất:</strong> ${movie.production_companies.map(company => company.name).join(', ')}</p>
-                <p><strong>Doanh thu:</strong> $${movie.revenue.toLocaleString()}</p>
-                <p><strong>Ngân sách:</strong> $${movie.budget.toLocaleString()}</p>
-                <p><strong>Trạng thái:</strong> ${movie.status}</p>
-                <p><strong>Trang web chính thức:</strong>
-                    ${movie.homepage ? `<a href="${movie.homepage}" target="_blank">${movie.homepage}</a>` : 'Không có'}
-                </p>
-                ${trailer ? `<p class="section-title">🎬 Trailer:</p>
-                <iframe width="100%" height="315" src="https://www.youtube.com/embed/${trailer.key}" frameborder="0" allowfullscreen></iframe>` : ''}
-            </div>
-        `;
+        </div>
+        <div class="col-md-8 movie-details">
+            <h1>${movie.title}</h1>
+            <p><strong>Khẩu hiệu:</strong> ${movie.tagline || 'Không có khẩu hiệu.'}</p>
+            <p><strong>Ngày phát hành:</strong> ${movie.release_date}</p>
+            <p><strong>Mô tả:</strong> ${movie.overview || 'Không có mô tả.'}</p>
+            <p class="rating"><strong>Đánh giá:</strong> ${movie.vote_average} / 10 (${movie.vote_count} lượt)</p>
+            <p><strong>Thể loại:</strong> ${movie.genres.map(genre => genre.name).join(', ')}</p>
+            <p><strong>Thời lượng:</strong> ${movie.runtime} phút</p>
+            <p><strong>Ngôn ngữ gốc:</strong> ${movie.original_language.toUpperCase()}</p>
+            <p><strong>Quốc gia sản xuất:</strong> ${movie.production_countries.map(country => country.name).join(', ')}</p>
+            <p><strong>Doanh thu:</strong> $${movie.revenue.toLocaleString()}</p>
+            <p><strong>Ngân sách:</strong> $${movie.budget.toLocaleString()}</p>
+            <p><strong>Trạng thái:</strong> ${movie.status}</p>
+            <p><strong>Trang web chính thức:</strong>
+                ${movie.homepage ? `<a href="${movie.homepage}" target="_blank">${movie.homepage}</a>` : 'Không có'}
+            </p>
+            ${trailer ? `<p class="section-title">🎬 Trailer:</p>
+            <iframe width="100%" height="315" src="https://www.youtube.com/embed/${trailer.key}" frameborder="0" allowfullscreen></iframe>` : ''}
+        </div>
+    `;
     }
 
-    // Gọi hàm lấy dữ liệu khi tải trang
+
+
+
+    // Hiển thị danh sách diễn viên
+    function displayCast(cast) {
+        const container = document.getElementById('cast-container');
+        container.innerHTML = '';
+
+        if (!cast || cast.length === 0) {
+            container.innerHTML = '<p class="text-center">Không có thông tin diễn viên.</p>';
+            return;
+        }
+
+        cast.slice(0, 12).forEach(actor => {
+            const actorCard = document.createElement('div');
+            actorCard.className = 'col-md-2 mb-4 cast-card';
+            actorCard.innerHTML = `
+                <img src="https://image.tmdb.org/t/p/w200${actor.profile_path}" alt="${actor.name}" onerror="this.onerror=null;this.src='https://via.placeholder.com/100';">
+                <h6>${actor.name}</h6>
+                <p><small>${actor.character || 'N/A'}</small></p>
+            `;
+            actorCard.addEventListener('click', () => {
+                window.location.href = `/cast?personId=${actor.id}`;
+            });
+            container.appendChild(actorCard);
+        });
+    }
+
+    // Gọi hàm khi tải trang
     fetchMovieDetails();
+    fetchCast();
 </script>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
