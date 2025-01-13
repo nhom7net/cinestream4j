@@ -40,13 +40,6 @@
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
         </dependency>
-
-        <dependency>
-            <groupId>com.skhanal5</groupId>
-            <artifactId>supabase-java-spring</artifactId>
-            <version>1.0-SNAPSHOT</version>
-        </dependency>
-
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-devtools</artifactId>
@@ -62,7 +55,20 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.17.2</version>
         </dependency>
-
+        <dependency>
+            <groupId>com.skhanal5</groupId>
+            <artifactId>supabase-java-common</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/.mvn/externals/supabase-java-common-1.0-SNAPSHOT.jar</systemPath>
+        </dependency>
+        <dependency>
+            <groupId>com.skhanal5</groupId>
+            <artifactId>supabase-java-spring</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${project.basedir}/.mvn/externals/supabase-java-spring-1.0-SNAPSHOT.jar</systemPath>
+        </dependency>
     </dependencies>
 
     <build>
