@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Phim Sắp Ra Mắt</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .movie-card {
+      min-width: 200px;
+      max-width: 200px;
+      text-align: center;
+    }
+
+    .movie-card img {
+      width: 100%;
+      height: 300px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .section-title {
+      font-size: 1.5rem;
+      margin: 20px 0;
+    }
+
+    .movie-section {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 15px;
+      justify-content: center;
+    }
+  </style>
+</head>
+
+<body>
+<!-- Upcoming Movies Section -->
+<div class="container my-5">
+  <h2 class="section-title text-center">🎬 Phim Vửa Mới Ra Mắt</h2>
+  <div id="upcoming-movies" class="movie-section">
+    <!-- Danh sách phim sẽ hiển thị ở đây -->
+  </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+<!-- JavaScript Fetch API -->
+<script>
+  const API_KEY = '5b3554c90c5c911c652788f8b65db269';
+  const BASE_URL = 'https://api.themoviedb.org/3';
+
+  // Gọi API để lấy phim Sắp Ra Mắt
+  async function fetchUpcomingMovies() {
+    const apiUrl = `${BASE_URL}/movie/upcoming?api_key=${API_KEY}&language=vi-VN`;
+
+    try {
+      const response = await fetch(apiUrl);
+      const data = await response.json();
+      displayMovies(data.results);
+    } catch (error) {
+      console.error('Lỗi khi lấy phim sắp ra mắt:', error);
+      document.getElementById('upcoming-movies').innerHTML = '<p class="text-danger">Không thể tải danh sách phim.</p>';
+    }
+  }
+
+  // Hiển thị danh sách phim
+  function displayMovies(movies) {
+    const container = document.getElementById('upcoming-movies');
+    container.innerHTML = '';
+
+    if (movies.length === 0) {
+      container.innerHTML = '<p class="text-center">Không có phim nào sắp ra mắt.</p>';
+      return;
+    }
+
+    movies.forEach(movie => {
+      const movieCard = document.createElement('div');
+      movieCard.className = 'movie-card';
+      movieCard.innerHTML = `
+                <a href="/details?movieId=${movie.id}" style="text-decoration: none; color: inherit;">
+                    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
+                    <h6>${movie.title}</h6>
+                    <p><strong>⭐</strong> ${movie.vote_average} / 10 | (${movie.vote_count || '0'} votes)</p>
+                    <p><strong>📅 Ngày chiếu:</strong> ${movie.release_date || 'N/A'}</p>
+                </a>
+            `;
+      container.appendChild(movieCard);
+    });
+  }
+
+  // Gọi API khi tải trang
+  fetchUpcomingMovies();
+</script>
+
+</body>
+</html>
