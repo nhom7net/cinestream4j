@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movie Details</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .movie-poster {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+        }
+
+        .movie-details {
+            padding: 20px;
+        }
+
+        .rating {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+
+        .section-title {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <div id="movie-container" class="row">
+        <!-- Movie Details sẽ được hiển thị ở đây -->
+    </div>
+</div>
+
+<script>
+    const API_KEY = '5b3554c90c5c911c652788f8b65db269';
+
+    // Lấy movieId từ URL
+    const urlParams = new URLSearchParams(window.location.search);
+    const movieId = urlParams.get('movieId');
+
+    // Gọi API lấy thông tin chi tiết phim
+    const apiUrl = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}&language=en-US&append_to_response=videos`;
+
+    async function fetchMovieDetails() {
+        try {
+            const response = await fetch(apiUrl);
+            if (!response.ok) {
+                throw new Error('Không thể lấy thông tin phim');
+            }
+
+            const movie = await response.json();
+            displayMovieDetails(movie);
+        } catch (error) {
+            console.error('Lỗi khi lấy thông tin phim:', error);
+            document.getElementById('movie-container').innerHTML = '<p class="text-danger">Không thể tải thông tin phim.</p>';
+        }
+    }
+
+    // Hiển thị thông tin phim
+    function displayMovieDetails(movie) {
+        const container = document.getElementById('movie-container');
+
+        // Lấy video trailer đầu tiên nếu có
+        const trailer = movie.videos?.results.find(video => video.type === "Trailer" && video.site === "YouTube");
+
+        container.innerHTML = `
+            <div class="col-md-4">
+                <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" class="movie-poster">
+            </div>
+            <div class="col-md-8 movie-details">
+                <h1>${movie.title}</h1>
+                <p><strong>Khẩu hiệu:</strong> ${movie.tagline || 'Không có khẩu hiệu.'}</p>
+                <p><strong>Ngày phát hành:</strong> ${movie.release_date}</p>
+                <p><strong>Mô tả:</strong> ${movie.overview || 'Không có mô tả.'}</p>
+                <p class="rating"><strong>Đánh giá:</strong> ${movie.vote_average} / 10 (${movie.vote_count} lượt)</p>
+                <p><strong>Thể loại:</strong> ${movie.genres.map(genre => genre.name).join(', ')}</p>
+                <p><strong>Thời lượng:</strong> ${movie.runtime} phút</p>
+                <p><strong>Ngôn ngữ gốc:</strong> ${movie.original_language.toUpperCase()}</p>
+                <p><strong>Ngôn ngữ sử dụng:</strong> ${movie.spoken_languages.map(lang => lang.english_name).join(', ')}</p>
+                <p><strong>Quốc gia sản xuất:</strong> ${movie.production_countries.map(country => country.name).join(', ')}</p>
+                <p><strong>Công ty sản xuất:</strong> ${movie.production_companies.map(company => company.name).join(', ')}</p>
+                <p><strong>Doanh thu:</strong> $${movie.revenue.toLocaleString()}</p>
+                <p><strong>Ngân sách:</strong> $${movie.budget.toLocaleString()}</p>
+                <p><strong>Trạng thái:</strong> ${movie.status}</p>
+                <p><strong>Trang web chính thức:</strong>
+                    ${movie.homepage ? `<a href="${movie.homepage}" target="_blank">${movie.homepage}</a>` : 'Không có'}
+                </p>
+                ${trailer ? `<p class="section-title">🎬 Trailer:</p>
+                <iframe width="100%" height="315" src="https://www.youtube.com/embed/${trailer.key}" frameborder="0" allowfullscreen></iframe>` : ''}
+            </div>
+        `;
+    }
+
+    // Gọi hàm lấy dữ liệu khi tải trang
+    fetchMovieDetails();
+</script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+</html>
