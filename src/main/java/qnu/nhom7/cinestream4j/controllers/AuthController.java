@@ -94,7 +94,6 @@ public class AuthController {
                 .filter(filter)
                 .build();
 
-        // TODO: Fix 400 Bad Request (haven't find out the cause yet)
         var sbResp = client.getClient().executeUpdate(query, String.class);
 
         System.out.println(sbResp);
