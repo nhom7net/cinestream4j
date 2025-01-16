@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Company Details</title>
+    <title>Thông Tin Hãng Phim - [[${company.name}]]</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         .company-logo {
@@ -15,7 +15,6 @@
         .movie-card {
             min-width: 200px;
             max-width: 200px;
-            flex-shrink: 0;
             text-align: center;
             margin: 15px;
         }
@@ -40,109 +39,42 @@
 <div class="container mt-5">
     <!-- Company Info -->
     <div id="company-info" class="text-center">
-        <!-- Thông tin hãng phim sẽ được hiển thị ở đây -->
+        <img th:src="@{'https://image.tmdb.org/t/p/w200' + ${company.logo_path}}"
+             th:alt="${company.name}" class="company-logo"
+             onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">
+        <h1 th:text="${company.name}"></h1>
+        <p><strong>Mô tả:</strong> <span th:text="${company.description ?: 'Không có mô tả.'}"></span></p>
+        <p><strong>Trụ sở chính:</strong> <span th:text="${company.headquarters ?: 'Không rõ'}"></span></p>
+        <p><strong>Quốc gia:</strong> <span th:text="${company.origin_country ?: 'Không rõ'}"></span></p>
+        <p><strong>Trang chủ:</strong>
+            <a th:href="${company.homepage}" th:text="${company.homepage ?: 'Không có'}" target="_blank"></a>
+        </p>
     </div>
 
     <!-- Company Movies -->
     <div id="company-movies" class="mt-5">
         <h2 class="section-title text-center">🎥 Các Bộ Phim Của Hãng</h2>
-        <div id="movies-list" class="d-flex flex-wrap justify-content-center">
-            <!-- Danh sách phim sẽ hiển thị ở đây -->
+        <div class="d-flex flex-wrap justify-content-center">
+            <th:block th:if="${#lists.isEmpty(movies)}">
+                <p class="text-center">Không có phim nào của hãng này.</p>
+            </th:block>
+
+            <th:block th:each="movie : ${movies}">
+                <div class="movie-card">
+                    <a th:href="@{/details(movieId=${movie.id})}" style="text-decoration: none; color: inherit;">
+                        <img th:src="@{'https://image.tmdb.org/t/p/w500' + ${movie.poster_path}}"
+                             th:alt="${movie.title}"
+                             onerror="this.onerror=null;this.src='https://via.placeholder.com/300x450';">
+                        <h6 th:text="${movie.title}"></h6>
+                        <p><strong>Ngày phát hành:</strong> <span th:text="${movie.release_date ?: 'Không rõ'}"></span></p>
+                        <p><strong>Đánh giá:</strong> <span th:text="${movie.vote_average ?: 'N/A'}"></span> / 10</p>
+                    </a>
+                </div>
+            </th:block>
         </div>
     </div>
 </div>
 
-<script>
-    const API_KEY = '5b3554c90c5c911c652788f8b65db269';
-    const BASE_URL = 'https://api.themoviedb.org/3';
-
-    // Lấy companyId từ URL
-    const urlParams = new URLSearchParams(window.location.search);
-    const companyId = urlParams.get('companyId');
-
-    // Gọi API lấy thông tin hãng phim
-    const companyApiUrl = `${BASE_URL}/company/${companyId}?api_key=${API_KEY}`;
-    const moviesApiUrl = `${BASE_URL}/discover/movie?api_key=${API_KEY}&with_companies=${companyId}&language=en-US`;
-
-    async function fetchCompanyDetails() {
-        try {
-            const response = await fetch(companyApiUrl);
-            if (!response.ok) {
-                throw new Error('Không thể lấy thông tin hãng phim');
-            }
-
-            const company = await response.json();
-            displayCompanyInfo(company);
-        } catch (error) {
-            console.error('Lỗi khi lấy thông tin hãng phim:', error);
-            document.getElementById('company-info').innerHTML = '<p class="text-danger">Không thể tải thông tin hãng phim.</p>';
-        }
-    }
-
-    async function fetchCompanyMovies() {
-        try {
-            const response = await fetch(moviesApiUrl);
-            if (!response.ok) {
-                throw new Error('Không thể lấy danh sách phim của hãng');
-            }
-
-            const data = await response.json();
-            displayMovies(data.results);
-        } catch (error) {
-            console.error('Lỗi khi lấy danh sách phim:', error);
-            document.getElementById('movies-list').innerHTML = '<p class="text-danger">Không thể tải danh sách phim.</p>';
-        }
-    }
-
-    // Hiển thị thông tin hãng phim
-    function displayCompanyInfo(company) {
-        const container = document.getElementById('company-info');
-        container.innerHTML = `
-            <img src="https://image.tmdb.org/t/p/w200${company.logo_path}"
-                 alt="${company.name}"
-                 class="company-logo"
-                 onerror="this.onerror=null;this.src='https://via.placeholder.com/150';">
-            <h1>${company.name}</h1>
-            <p><strong>Mô tả:</strong> ${company.description || 'Không có mô tả.'}</p>
-            <p><strong>Trụ sở chính:</strong> ${company.headquarters || 'Không rõ'}</p>
-            <p><strong>Quốc gia:</strong> ${company.origin_country || 'Không rõ'}</p>
-            <p><strong>Trang chủ:</strong>
-                ${company.homepage ? `<a href="${company.homepage}" target="_blank">${company.homepage}</a>` : 'Không có'}
-            </p>
-        `;
-    }
-
-    // Hiển thị danh sách phim
-    function displayMovies(movies) {
-        const container = document.getElementById('movies-list');
-        container.innerHTML = '';
-
-        if (movies.length === 0) {
-            container.innerHTML = '<p class="text-center">Không có phim nào của hãng này.</p>';
-            return;
-        }
-
-        movies.forEach(movie => {
-            const movieCard = document.createElement('div');
-            movieCard.className = 'movie-card';
-            movieCard.innerHTML = `
-                <a href="/details.html?movieId=${movie.id}" style="text-decoration: none; color: inherit;">
-                    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}" onerror="this.onerror=null;this.src='https://via.placeholder.com/300x450';">
-                    <h6>${movie.title}</h6>
-                    <p><strong>Ngày phát hành:</strong> ${movie.release_date || 'Không rõ'}</p>
-                    <p><strong>Đánh giá:</strong> ${movie.vote_average || 'N/A'} / 10</p>
-                </a>
-            `;
-            container.appendChild(movieCard);
-        });
-    }
-
-    // Gọi các hàm khi tải trang
-    fetchCompanyDetails();
-    fetchCompanyMovies();
-</script>
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
 </body>
 </html>

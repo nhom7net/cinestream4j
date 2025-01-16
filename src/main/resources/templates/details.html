@@ -146,7 +146,7 @@
         // Tạo danh sách các hãng phim với liên kết điều hướng
         const productionCompanies = movie.production_companies?.map(company => `
         <div class="d-flex align-items-center mb-2">
-            <a href="/company?companyId=${company.id}" target="_blank" style="text-decoration: none; color: inherit;">
+            <a href="/company?companyId=${company.id}" target="_self" style="text-decoration: none; color: inherit;">
                 <img src="https://image.tmdb.org/t/p/w200${company.logo_path}"
                      alt="${company.name}"
                      onerror="this.onerror=null;this.src='https://via.placeholder.com/50';"
