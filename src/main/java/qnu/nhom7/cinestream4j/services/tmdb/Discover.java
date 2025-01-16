@@ -147,5 +147,32 @@ public class Discover {
         return mapper.readValue(results, ArrayList.class);
     }
 
+    public static ArrayList getPopularPeople(int page) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.themoviedb.org/3/person/popular?language=vi-VN&page=" + page))
+                .header("Content-Type", "application/json")
+                .header("Authorization", Token.tmdb_token)
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        JsonNode nodes = mapper.readTree(response.body());
+        String results = nodes.get("results").toString();
+
+        return mapper.readValue(results, ArrayList.class);
+    }
+
+    public static ArrayList searchPeople(String query, int page) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.themoviedb.org/3/search/person?language=vi-VN&query=" + query + "&page=" + page))
+                .header("Content-Type", "application/json")
+                .header("Authorization", Token.tmdb_token)
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        JsonNode nodes = mapper.readTree(response.body());
+        String results = nodes.get("results").toString();
+
+        return mapper.readValue(results, ArrayList.class);
+    }
 
 }
