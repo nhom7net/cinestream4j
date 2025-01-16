@@ -1,8 +1,6 @@
 package qnu.nhom7.cinestream4j.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.skhanal5.models.Filter;
-import com.skhanal5.models.SelectQuery;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -11,8 +9,6 @@ import qnu.nhom7.cinestream4j.services.supabase.Supabase;
 import qnu.nhom7.cinestream4j.services.tmdb.Discover;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.LinkedHashMap;
 
 @Controller
 public class IndexController {

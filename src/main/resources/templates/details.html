@@ -212,34 +212,6 @@
             container.appendChild(actorCard);
         });
     }
-    
-    // Hiển thị danh sách diễn viên
-    function displayCast(cast) {
-        const container = document.getElementById('cast-container');
-        container.innerHTML = '';
-
-        if (!cast || cast.length === 0) {
-            container.innerHTML = '<p class="text-center">Không có thông tin diễn viên.</p>';
-            return;
-        }
-
-    // Gọi hàm khi tải trang
-    fetchMovieDetails();
-    fetchCast();
-        cast.slice(0, 12).forEach(actor => {
-            const actorCard = document.createElement('div');
-            actorCard.className = 'col-md-2 mb-4 cast-card';
-            actorCard.innerHTML = `
-                <img src="https://image.tmdb.org/t/p/w200${actor.profile_path}" alt="${actor.name}" onerror="this.onerror=null;this.src='https://via.placeholder.com/100';">
-                <h6>${actor.name}</h6>
-                <p><small>${actor.character || 'N/A'}</small></p>
-            `;
-            actorCard.addEventListener('click', () => {
-                window.location.href = `/cast?personId=${actor.id}`;
-            });
-            container.appendChild(actorCard);
-        });
-    }
 
     // Gọi hàm khi tải trang
     fetchMovieDetails();
@@ -248,21 +220,28 @@
     // Hàm thêm phim vào danh sách phim
     async function addToList() {
         // Lấy URL hiện tại để xác định phim muốn thêm
-        const movieId = window.location.pathname.split('/').pop();
+        const urlParams = new URLSearchParams(window.location.search);
+        const movieId = urlParams.get('movieId');
 
+        console.log(movieId);
         try {
+            const data = JSON.stringify({
+                movieId: movieId
+            });
+
             // Gửi request tới endpoint để thêm phim
             const response = await fetch(`/watchlist/add`, {
                 method: 'POST',
-                header: {
+                headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({
-                    movieId: movieId
-                })
+                body: data
             });
+            console.log(data);
+            console.log(response);
 
             const result = await response.json();
+            console.log(result);
 
             if (response.ok) {
                 alert(result.message);

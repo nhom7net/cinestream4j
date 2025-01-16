@@ -3,6 +3,7 @@ package qnu.nhom7.cinestream4j.controllers;
 import com.skhanal5.models.Filter;
 import com.skhanal5.models.UpdateQuery;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -49,14 +50,15 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public String loginProcessor(@RequestParam Map<String, String> body, HttpServletResponse response) throws IOException, InterruptedException {
+    public String loginProcessor(@RequestParam Map<String, String> body, HttpServletResponse response,
+                                 HttpSession session) throws IOException, InterruptedException {
         var data = this.auth.signIn(body.get("email"), body.get("password"));
         if (Objects.equals(data, "invalid_credentials")) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return "redirect:/login?error=" + data;
         }
 
-        response.addCookie(CookieHelper.setCookie("userid", data));
+        session.setAttribute("userid", data);
         return "redirect:/";
     }
 
