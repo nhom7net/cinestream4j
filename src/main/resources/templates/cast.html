@@ -56,6 +56,11 @@
   <div id="cast-container" class="row">
     <!-- Thông tin diễn viên sẽ được hiển thị ở đây -->
   </div>
+  <!-- Nút Yêu Thích trong thông tin diễn viên -->
+  <button id="favorite-btn" class="btn btn-outline-danger">
+    <i class="fas fa-heart"></i> Yêu Thích
+  </button>
+
 
   <!-- Movies Section -->
   <div class="mt-5">
@@ -113,22 +118,26 @@
   function displayCastDetails(cast) {
     const container = document.getElementById('cast-container');
     container.innerHTML = `
-            <div class="col-md-4">
-                <img src="https://image.tmdb.org/t/p/w500${cast.profile_path}" alt="${cast.name}" class="cast-image" onerror="this.onerror=null;this.src='https://via.placeholder.com/200';">
-            </div>
-            <div class="col-md-8 cast-details">
-                <h1>${cast.name}</h1>
-                <p><strong>Ngày sinh:</strong> ${cast.birthday || 'Không rõ'}</p>
-                <p><strong>Nơi sinh:</strong> ${cast.place_of_birth || 'Không rõ'}</p>
-                <p><strong>Tiểu sử:</strong> ${cast.biography || 'Không có thông tin.'}</p>
-                <p><strong>Biệt danh:</strong> ${cast.also_known_as.length > 0 ? cast.also_known_as.join(', ') : 'Không có'}</p>
-                <p><strong>Giới tính:</strong> ${cast.gender === 1 ? 'Nữ' : 'Nam'}</p>
-                <p><strong>Độ phổ biến:</strong> ${cast.popularity || 'Không rõ'}</p>
-                <a href="${cast.homepage}" target="_blank" style="text-decoration: none; color: inherit;" data-bs-toggle="tooltip" data-bs-placement="top" title="Visit Homepage">
-                <i class="fas fa-home homepage-icon"></i>
-                </a>
-            </div>
-        `;
+        <div class="col-md-4">
+            <img src="https://image.tmdb.org/t/p/w500${cast.profile_path}" alt="${cast.name}" class="cast-image" onerror="this.onerror=null;this.src='https://via.placeholder.com/200';">
+        </div>
+        <div class="col-md-8 cast-details">
+            <h1>${cast.name}</h1>
+            <p><strong>Ngày sinh:</strong> ${cast.birthday || 'Không rõ'}</p>
+            <p><strong>Nơi sinh:</strong> ${cast.place_of_birth || 'Không rõ'}</p>
+            <p><strong>Tiểu sử:</strong> ${cast.biography || 'Không có thông tin.'}</p>
+            <p><strong>Biệt danh:</strong> ${cast.also_known_as.length > 0 ? cast.also_known_as.join(', ') : 'Không có'}</p>
+            <p><strong>Giới tính:</strong> ${cast.gender === 1 ? 'Nữ' : 'Nam'}</p>
+            <p><strong>Độ phổ biến:</strong> ${cast.popularity || 'Không rõ'}</p>
+            ${
+        cast.homepage
+            ? `<a href="${cast.homepage}" target="_blank" style="text-decoration: none; color: inherit;" data-bs-toggle="tooltip" data-bs-placement="top" title="Visit Homepage">
+                    <i class="fas fa-home homepage-icon"></i> Trang cá nhân
+                </a>`
+            : `<p class="text-danger">Không có thông tin trang cá nhân.</p>`
+    }
+        </div>
+    `;
   }
 
   // Hiển thị danh sách phim
@@ -155,6 +164,28 @@
       container.appendChild(movieCard);
     });
   }
+
+  //luu danh sach dien vien
+  document.getElementById('favorite-btn').addEventListener('click', () => {
+    // Lấy danh sách yêu thích từ localStorage
+    let favorites = JSON.parse(localStorage.getItem('favoriteActors')) || [];
+
+    // Kiểm tra nếu diễn viên đã tồn tại trong danh sách
+    if (!favorites.some(actor => actor.id === personId)) {
+      // Thêm thông tin diễn viên vào danh sách
+      favorites.push({
+        id: personId,
+        name: cast.name,
+        profile_path: cast.profile_path,
+      });
+      localStorage.setItem('favoriteActors', JSON.stringify(favorites));
+      alert('Đã thêm vào danh sách yêu thích!');
+    } else {
+      alert('Diễn viên này đã có trong danh sách yêu thích.');
+    }
+  });
+
+
 
   // Gọi hàm khi tải trang
   fetchCastDetails();

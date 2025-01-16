@@ -9,12 +9,13 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.LinkedHashMap;
 
 public class Movie {
     private static final HttpClient httpClient = HttpClient.newHttpClient();
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    public static String getInfo(String movieID) throws IOException, InterruptedException {
+    public static LinkedHashMap getInfo(String movieID) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(String.format("https://api.themoviedb.org/3/movie/%s?language=vi-VN", movieID)))
                 .header("Content-Type", "application/json")
@@ -26,7 +27,7 @@ public class Movie {
 
         var a = nodes.toString();
 
-        return a;
+        return mapper.readValue(a, LinkedHashMap.class);
     }
 
 }

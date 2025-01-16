@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import qnu.nhom7.cinestream4j.services.supabase.Supabase;
+import qnu.nhom7.cinestream4j.services.tmdb.Discover;
+import qnu.nhom7.cinestream4j.services.tmdb.Movie;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Controller
@@ -34,8 +37,8 @@ public class WatchlistController {
 
         // Kiểm tra nếu chưa đăng nhập
         if (userId == null) {
-            model.addAttribute("error", "Bạn cần đăng nhập để xem danh sách.");
-            return "details";
+            model.addAttribute("errorMessage", "⚠️ Bạn cần đăng nhập để xem danh sách.");
+            return "watchlist";
         }
 
         Filter filter = new Filter.FilterBuilder()
@@ -43,37 +46,51 @@ public class WatchlistController {
                 .build();
 
         try {
-            // Tạo truy vấn để lấy data
+            // Lấy danh sách từ Supabase
             SelectQuery query = new SelectQuery.SelectQueryBuilder()
                     .from("watchlist")
                     .select("*")
                     .filter(filter)
                     .build();
 
-            // Thực hiện truy vấn
-            var response = client.getClient().executeSelect(query, ArrayList.class);
-            String a = null;
+            ArrayList<LinkedHashMap<String, String>> response;
+            response = client.getClient().executeSelect(query, ArrayList.class);
+
+            if (response.isEmpty()) {
+                model.addAttribute("infoMessage", "📭 Danh sách xem của bạn đang trống.");
+            }
+            else {
+                ArrayList<LinkedHashMap<String, String>> movies = new ArrayList<>();
+                for (LinkedHashMap<String, String> movie: response) {
+                    movies.add(Movie.getInfo(movie.get("movieId")));
+                }
+                model.addAttribute("watchlist", movies);
+            }
+
             return "watchlist";
 
         } catch (Exception e) {
-            e.printStackTrace();
-            model.addAttribute("error", "Không thể lấy dữ liệu từ Supabase.");
+            model.addAttribute("errorMessage", "❌ Không thể lấy dữ liệu từ Supabase. Vui lòng thử lại sau.");
+            return "watchlist";
         }
-        return "watchlist";
     }
 
     @PostMapping("/add")
-    public ResponseEntity<?> addToWatchlist(@RequestBody Map<String, String> payload,
-                                            HttpSession session) {
+    public String addToWatchlist(@RequestBody Map<String, String> payload,
+                                            HttpSession session,
+                                            Model model) {
+
         String movieId = payload.get("movieId");
         String userId = (String) session.getAttribute("userid");
 
         if (userId == null) {
-            return ResponseEntity.status(401).body(Map.of("message", "Bạn cần đăng nhập!"));
+            model.addAttribute("errorMessage", "⚠️ Bạn cần đăng nhập để thêm vào danh sách!");
+            return "watchlist";
         }
 
         if (movieId == null || movieId.isEmpty()) {
-            return ResponseEntity.badRequest().body(Map.of("message", "Movie ID không hợp lệ,"));
+            model.addAttribute("errorMessage", "❗ Movie ID không hợp lệ.");
+            return "watchlist";
         }
 
         try {
@@ -87,10 +104,12 @@ public class WatchlistController {
 
             client.getClient().executeInsert(query, String.class);
 
-            return ResponseEntity.ok(Map.of("message", "Đã thêm vào danh sách!"));
+            model.addAttribute("successMessage", "✅ Đã thêm phim vào danh sách thành công!");
+            return "watchlist";
+
         } catch (Exception e) {
-            e.printStackTrace();
-            return ResponseEntity.status(500).body(Map.of("message", "Lỗi server."));
+            model.addAttribute("errorMessage", "❌ Lỗi server. Vui lòng thử lại sau.");
+            return "watchlist";
         }
     }
 

@@ -19,21 +19,35 @@
 
     <!-- Hiển thị danh sách phim -->
     <div th:if="${!#lists.isEmpty(watchlist)}" class="row">
-        <div class="col-md-3 mb-4" th:each="item : ${watchlist}">
+        <div class="col-md-3 mb-4" th:each="movie : ${watchlist}">
             <div class="card">
                 <!-- Hình ảnh poster -->
-                <img th:id="'poster-' + ${item.movieId}" class="card-img-top" src="" alt="Poster phim">
+                <img th:src="'https://image.tmdb.org/t/p/w500' + ${movie.poster_path}" class="card-img-top" src="" alt="Poster phim">
 
                 <div class="card-body">
                     <!-- Tên phim -->
-                    <h5 class="card-title" th:id="'title-' + ${item.movieId}">Đang tải...</h5>
+                    <h5 class="card-title" th:text="${movie.title}">Đang tải...</h5>
 
                     <!-- Nút hành động -->
-                    <a th:href="@{'/details?movieId=' + ${item.movieId}}" class="btn btn-primary btn-sm">Xem chi tiết</a>
-                    <button class="btn btn-danger btn-sm" onclick="removeFromList('[[${item.movieId}]]')">Xóa</button>
+                    <a th:href="@{'/details?movieId=' + ${movie.id}}" class="btn btn-primary btn-sm">Xem chi tiết</a>
+                    <button class="btn btn-danger btn-sm" th:onclick="'javascript:removefromList(\'' + ${movie.id} + '\');'">Xóa</button>
                 </div>
             </div>
         </div>
+    </div>
+</div>
+
+<div class="container mt-3">
+    <!-- Hiển thị thông báo lỗi -->
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- Hiển thị thông báo thông tin -->
+    <div th:if="${infoMessage}" class="alert alert-info alert-dismissible fade show" role="alert">
+        <span th:text="${infoMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
     </div>
 </div>
 
