@@ -175,4 +175,31 @@ public class Discover {
         return mapper.readValue(results, ArrayList.class);
     }
 
+    /////cast///
+    public static Map<String, Object> getCastDetails(String personId) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(String.format("https://api.themoviedb.org/3/person/%s?language=vi-VN", personId)))
+            .header("Content-Type", "application/json")
+            .header("Authorization", Token.tmdb_token)
+            .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        JsonNode node = mapper.readTree(response.body());
+
+        return mapper.convertValue(node, Map.class);
+    }
+
+    public static List<Map<String, Object>> getMoviesByCast(String personId) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+            .uri(URI.create(String.format("https://api.themoviedb.org/3/person/%s/movie_credits?language=vi-VN", personId)))
+            .header("Content-Type", "application/json")
+            .header("Authorization", Token.tmdb_token)
+            .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        JsonNode node = mapper.readTree(response.body());
+
+        return mapper.convertValue(node.get("cast"), List.class);
+    }
+
 }

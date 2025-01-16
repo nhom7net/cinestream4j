@@ -30,4 +30,6 @@ public class Movie {
         return mapper.readValue(a, LinkedHashMap.class);
     }
 
+
+
 }
