@@ -107,14 +107,19 @@
     // Lấy tham số ngôn ngữ từ URL
     const params = new URLSearchParams(window.location.search);
     const lang = params.get('lang') || 'vi'; // Mặc định là 'vi'
+    const search = params.get('search');
 
     // Xử lý tìm kiếm phim
     document.getElementById('search-form').addEventListener('submit', async function (event) {
         event.preventDefault();
-        const query = document.getElementById('search-input').value;
+        await searchMovie();
+    });
+
+    async function searchMovie(search) {
+        const query = search || document.getElementById('search-input').value;
         if (query.trim() === '') return;
 
-        const searchUrl = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=vi-VN`;
+        const searchUrl = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=${lang}`;
         try {
             const response = await fetch(searchUrl);
             const data = await response.json();
@@ -122,6 +127,11 @@
         } catch (error) {
             console.error('Lỗi khi tìm kiếm phim:', error);
         }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+        if (search !== "")
+            searchMovie(search)
     });
 
     // Hiển thị phim lên giao diện

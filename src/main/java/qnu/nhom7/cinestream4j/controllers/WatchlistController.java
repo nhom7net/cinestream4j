@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import qnu.nhom7.cinestream4j.services.supabase.Supabase;
-import qnu.nhom7.cinestream4j.services.tmdb.Discover;
 import qnu.nhom7.cinestream4j.services.tmdb.Movie;
 
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -94,6 +94,24 @@ public class WatchlistController {
         }
 
         try {
+            Filter filter = new Filter.FilterBuilder()
+                    .equals("userid", userId)
+                    .equals("movieId", movieId)
+                    .build();
+
+            SelectQuery checkQuery = new SelectQuery.SelectQueryBuilder()
+                    .from("watchlist")
+                    .select("movieId")
+                    .filter(filter)
+                    .build();
+
+            List<String> existingMovies = client.getClient().executeSelect(checkQuery, ArrayList.class);
+
+            if (!existingMovies.isEmpty()) {
+                model.addAttribute("alertMessage", "⚠️ Phim đã có trong danh sách!");
+                return "redirect:/watchlist";
+            }
+
             InsertQuery query = new InsertQuery.InsertQueryBuilder()
                     .from("watchlist")
                     .insert(Map.of(
@@ -114,7 +132,7 @@ public class WatchlistController {
     }
 
     @PostMapping("/remove")
-    public ResponseEntity<?> removeFormWatchList(@RequestBody Map<String, String> payload, HttpSession session) {
+    public ResponseEntity<?> removeFromWatchList(@RequestBody Map<String, String> payload, HttpSession session) {
         String movieId = payload.get("movieId");
         String userId = (String) session.getAttribute("userid");
 

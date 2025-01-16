@@ -175,19 +175,4 @@ public class Discover {
         return mapper.readValue(results, ArrayList.class);
     }
 
-    public static ArrayList searchMovies(String query) throws IOException, InterruptedException {
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.themoviedb.org/3/search/movie?language=vi-VN&query=" + query))
-                .header("Content-Type", "application/json")
-                .header("Authorization", Token.tmdb_token)
-                .build();
-
-        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        System.out.println("API Response: " + response.body());  // In kết quả trả về từ API
-
-        JsonNode nodes = mapper.readTree(response.body());
-        var results = nodes.get("results").toString();
-
-        return mapper.readValue(results, ArrayList.class);
-    }
 }

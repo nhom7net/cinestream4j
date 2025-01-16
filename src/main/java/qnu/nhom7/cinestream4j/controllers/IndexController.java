@@ -24,17 +24,9 @@ public class IndexController {
 
     @GetMapping("/")
     public String index(Model model, HttpSession session) throws IOException, InterruptedException {
-        // temporary requires the user to login, for now.
-        var userid = session.getAttribute("userid");
-
-        if (userid == null) {
-            return "redirect:/login";
-        }
-
         var popular = Discover.getPopulars();
         var trending = Discover.getTrending();
         var genre = Discover.getGenreList();
-
 
         model.addAttribute("popular", popular);
         model.addAttribute("trending", trending);
