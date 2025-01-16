@@ -9,8 +9,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import qnu.nhom7.cinestream4j.supabase.Auth;
-import qnu.nhom7.cinestream4j.supabase.Supabase;
+import qnu.nhom7.cinestream4j.services.supabase.Auth;
+import qnu.nhom7.cinestream4j.services.supabase.Supabase;
 import qnu.nhom7.cinestream4j.utils.CookieHelper;
 
 import java.io.IOException;

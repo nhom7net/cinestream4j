@@ -7,7 +7,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
-import qnu.nhom7.cinestream4j.supabase.Supabase;
+import qnu.nhom7.cinestream4j.services.supabase.Supabase;
 
 import java.io.IOException;
 import java.util.ArrayList;
