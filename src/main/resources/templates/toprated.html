@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="vi">
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -34,13 +34,19 @@
 </head>
 
 <body>
+<div class="main-container">
 
+    <!-- Header -->
+    <div th:replace="components/header :: header">
+        <!-- Nếu sử dụng Thymeleaf, hãy đảm bảo file header.html nằm trong thư mục đúng -->
+    </div>
 <!-- Top Rated Movies Section -->
 <div class="container my-5">
     <h2 class="section-title text-center">🌟 Phim Được Đánh Giá Cao Nhất</h2>
     <div id="top-rated-movies" class="movie-section">
         <!-- Danh sách phim sẽ hiển thị ở đây -->
     </div>
+</div>
 </div>
 
 <!-- Bootstrap JS -->
@@ -51,9 +57,14 @@
     const API_KEY = '5b3554c90c5c911c652788f8b65db269';
     const BASE_URL = 'https://api.themoviedb.org/3';
 
+    // Lấy tham số ngôn ngữ từ URL
+    const params = new URLSearchParams(window.location.search);
+    const lang = params.get('lang') || 'vi'; // Mặc định là 'vi'
+
+
     // Gọi API lấy danh sách phim Top Rated
     async function fetchTopRatedMovies() {
-        const apiUrl = `${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=vi-VN`;
+        const apiUrl = `${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=${lang}`;
 
         try {
             const response = await fetch(apiUrl);
@@ -71,7 +82,7 @@
         container.innerHTML = '';
 
         if (movies.length === 0) {
-            container.innerHTML = '<p class="text-center">Không có phim nào để hiển thị.</p>';
+            container.innerHTML = '<p class="text-center" th:text="#{top-rated-movies.no_movies}">Không có phim nào để hiển thị.</p>';
             return;
         }
 
