@@ -44,4 +44,19 @@ public class Discover {
 
         return mapper.readValue(a, ArrayList.class);
     }
+
+    public static ArrayList getGenreList() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.themoviedb.org/3/genre/movie/list?language=vi-VN"))
+                .header("Content-Type", "application/json")
+                .header("Authorization", Token.tmdb_token)
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        JsonNode nodes = mapper.readTree(response.body());
+
+        var a = nodes.get("genres").toString();
+
+        return mapper.readValue(a, ArrayList.class);
+    }
 }

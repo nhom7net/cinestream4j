@@ -73,8 +73,10 @@
 <!-- Genres Section -->
 <div class="container my-5">
     <h2 class="section-title">📚 Thể loại phim</h2>
-    <div id="genre-list" class="d-flex flex-wrap justify-content-center">
-        <!-- Danh sách thể loại sẽ hiển thị ở đây -->
+    <div id="genre-list" class="d-flex flex-wrap justify-content-center" th:each="genre: ${genres}">
+        <a th:href="'/genres?genreId=' + ${genre.id} + '&genreName=' + ${genre.name}">
+            <button class="btn btn-outline-primary genre-button" th:text="${genre.name}"></button>
+        </a>
     </div>
 </div>
 
@@ -138,34 +140,6 @@
         }
     });
 
-    // Gọi API để lấy danh sách thể loại
-    async function fetchGenres() {
-        const genreUrl = `${BASE_URL}/genre/movie/list?api_key=${API_KEY}&language=vi-VN`;
-        try {
-            const response = await fetch(genreUrl);
-            const data = await response.json();
-            displayGenres(data.genres);
-        } catch (error) {
-            console.error('Lỗi khi lấy danh sách thể loại:', error);
-        }
-    }
-
-    // Hiển thị danh sách thể loại
-    function displayGenres(genres) {
-        const container = document.getElementById('genre-list');
-        container.innerHTML = '';
-
-        genres.forEach(genre => {
-            const button = document.createElement('button');
-            button.className = 'btn btn-outline-primary genre-button';
-            button.textContent = genre.name;
-            button.onclick = () => {
-                window.location.href = `/genres?genreId=${genre.id}&genreName=${encodeURIComponent(genre.name)}`;
-            };
-            container.appendChild(button);
-        });
-    }
-
     // Hiển thị phim lên giao diện
     function displayMovies(movies, containerId) {
         const container = document.getElementById(containerId);
@@ -190,9 +164,6 @@
             container.appendChild(movieCard);
         });
     }
-
-    // Gọi API khi tải trang
-    fetchGenres();
 </script>
 
 </body>
