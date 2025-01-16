@@ -3,14 +3,15 @@ package qnu.nhom7.cinestream4j.controllers;
 import com.skhanal5.models.Filter;
 import com.skhanal5.models.UpdateQuery;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import qnu.nhom7.cinestream4j.supabase.Auth;
-import qnu.nhom7.cinestream4j.supabase.Supabase;
+import qnu.nhom7.cinestream4j.services.supabase.Auth;
+import qnu.nhom7.cinestream4j.services.supabase.Supabase;
 import qnu.nhom7.cinestream4j.utils.CookieHelper;
 
 import java.io.IOException;
@@ -49,14 +50,15 @@ public class AuthController {
 
 
     @PostMapping("/login")
-    public String loginProcessor(@RequestParam Map<String, String> body, HttpServletResponse response) throws IOException, InterruptedException {
+    public String loginProcessor(@RequestParam Map<String, String> body, HttpServletResponse response,
+                                 HttpSession session) throws IOException, InterruptedException {
         var data = this.auth.signIn(body.get("email"), body.get("password"));
         if (Objects.equals(data, "invalid_credentials")) {
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             return "redirect:/login?error=" + data;
         }
 
-        response.addCookie(CookieHelper.setCookie("userid", data));
+        session.setAttribute("userid", data);
         return "redirect:/";
     }
 

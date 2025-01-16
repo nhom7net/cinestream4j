@@ -78,19 +78,31 @@
     </div>
 </div>
 
-<!-- Trending Movies Section -->
 <div class="container my-5">
-    <h2 class="section-title">🔥 Phim Đang Thịnh Hành</h2>
-    <div id="trending-movies" class="movie-section">
-        <!-- Phim trending sẽ hiển thị ở đây -->
+    <h2 class="section-title">🌟 Phim Phổ Biến</h2>
+    <div id="trending-movies" class="movie-section" th:each="movie: ${popular}">
+        <div class="movie-card">
+            <a th:href="'/details?movieId=' + ${movie.id}" style="text-decoration: none; color: inherit;">
+                <img th:src="'https://image.tmdb.org/t/p/w500' + ${movie.poster_path}" th:alt="${movie.title}">
+                <h6 th:text="${movie.title}"></h6>
+                <p><small>⭐ <span th:text="${movie.vote_average}"></span> / 10 | (<span th:text="${movie.vote_count}"></span> votes) </small></p>
+                <p><small>Ngày phát hành: <span th:text="${movie.release_date}"></span></small></p>
+            </a>
+        </div>
     </div>
 </div>
 
-<!-- Popular Movies Section -->
 <div class="container my-5">
-    <h2 class="section-title">🌟 Phim Phổ Biến</h2>
-    <div id="popular-movies" class="movie-section">
-        <!-- Phim popular sẽ hiển thị ở đây -->
+    <h2 class="section-title">🔥 Phim Đang Thịnh Hành</h2>
+    <div id="popular-movies" class="movie-section" th:each="movie: ${trending}">
+        <div class="movie-card">
+            <a href="/details?movieId=${movie.id}" style="text-decoration: none; color: inherit;">
+                <img th:src="'https://image.tmdb.org/t/p/w500' + ${movie.poster_path}" th:alt="${movie.title}">
+                <h6 th:text="${movie.title}"></h6>
+                <p><small>⭐ <span th:text="${movie.vote_average}"></span> / 10 | (<span th:text="${movie.vote_count}"></span> votes) </small></p>
+                <p><small>Ngày phát hành: <span th:text="${movie.release_date}"></span></small></p>
+            </a>
+        </div>
     </div>
 </div>
 
@@ -125,30 +137,6 @@
             console.error('Lỗi khi tìm kiếm phim:', error);
         }
     });
-
-    // Gọi API để lấy phim Trending
-    async function fetchTrendingMovies() {
-        const trendingUrl = `${BASE_URL}/trending/movie/day?api_key=${API_KEY}&language=vi-VN`;
-        try {
-            const response = await fetch(trendingUrl);
-            const data = await response.json();
-            displayMovies(data.results, 'trending-movies');
-        } catch (error) {
-            console.error('Lỗi khi lấy phim trending:', error);
-        }
-    }
-
-    // Gọi API để lấy phim Popular
-    async function fetchPopularMovies() {
-        const popularUrl = `${BASE_URL}/movie/popular?api_key=${API_KEY}&language=vi-VN`;
-        try {
-            const response = await fetch(popularUrl);
-            const data = await response.json();
-            displayMovies(data.results, 'popular-movies');
-        } catch (error) {
-            console.error('Lỗi khi lấy phim popular:', error);
-        }
-    }
 
     // Gọi API để lấy danh sách thể loại
     async function fetchGenres() {
@@ -204,8 +192,6 @@
     }
 
     // Gọi API khi tải trang
-    fetchTrendingMovies();
-    fetchPopularMovies();
     fetchGenres();
 </script>
 
