@@ -1,5 +1,6 @@
 package qnu.nhom7.cinestream4j.controllers;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.skhanal5.models.DeleteQuery;
 import com.skhanal5.models.Filter;
 import com.skhanal5.models.InsertQuery;
@@ -8,32 +9,37 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import qnu.nhom7.cinestream4j.supabase.Supabase;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import qnu.nhom7.cinestream4j.services.supabase.Supabase;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 @Controller
 @RequestMapping("/watchlist")
 public class WatchlistController {
     private final Supabase client;
+    private final ObjectMapper mapper = new ObjectMapper();
 
     public WatchlistController() {
         this.client = new Supabase();
     }
 
-    @GetMapping
+    @GetMapping("")
     public String watchlist(Model model, HttpSession session) {
-        String username = (String) session.getAttribute("username");
+        String userId = (String) session.getAttribute("userid");
 
         // Kiểm tra nếu chưa đăng nhập
-        if (username == null) {
+        if (userId == null) {
             model.addAttribute("error", "Bạn cần đăng nhập để xem danh sách.");
             return "details";
         }
 
         Filter filter = new Filter.FilterBuilder()
-                .equals("username", username)
+                .equals("userid", userId)
                 .build();
 
         try {
@@ -45,10 +51,8 @@ public class WatchlistController {
                     .build();
 
             // Thực hiện truy vấn
-            var response = client.getClient().executeSelect(query, String.class);
-
-            model.addAttribute("watchlist", response);
-
+            var response = client.getClient().executeSelect(query, ArrayList.class);
+            String a = null;
             return "watchlist";
 
         } catch (Exception e) {
@@ -58,13 +62,13 @@ public class WatchlistController {
         return "watchlist";
     }
 
-    @PostMapping(value = "/add", consumes = "application/json")
+    @PostMapping("/add")
     public ResponseEntity<?> addToWatchlist(@RequestBody Map<String, String> payload,
                                             HttpSession session) {
         String movieId = payload.get("movieId");
-        String username = (String) session.getAttribute("username");
+        String userId = (String) session.getAttribute("userid");
 
-        if (username == null) {
+        if (userId == null) {
             return ResponseEntity.status(401).body(Map.of("message", "Bạn cần đăng nhập!"));
         }
 
@@ -76,7 +80,7 @@ public class WatchlistController {
             InsertQuery query = new InsertQuery.InsertQueryBuilder()
                     .from("watchlist")
                     .insert(Map.of(
-                            "username", username,
+                            "userid", userId,
                             "movieId", movieId
                     ))
                     .build();
@@ -93,9 +97,9 @@ public class WatchlistController {
     @PostMapping("/remove")
     public ResponseEntity<?> removeFormWatchList(@RequestBody Map<String, String> payload, HttpSession session) {
         String movieId = payload.get("movieId");
-        String username = (String) session.getAttribute("username");
+        String userId = (String) session.getAttribute("userid");
 
-        if (username == null) {
+        if (userId == null) {
             return ResponseEntity.status(401).body(Map.of("message", "Bạn cần đăng nhập để thực hiện thao tác này."));
         }
 
@@ -104,7 +108,7 @@ public class WatchlistController {
         }
 
         Filter filter = new Filter.FilterBuilder()
-                .equals("username", username)
+                .equals("userid", userId)
                 .equals("movieId", movieId)
                 .build();
 

@@ -82,7 +82,7 @@
     <h2 class="section-title">🌟 Phim Phổ Biến</h2>
     <div id="trending-movies" class="movie-section" th:each="movie: ${popular}">
         <div class="movie-card">
-            <a href="/details?movieId=${movie.id}" style="text-decoration: none; color: inherit;">
+            <a th:href="'/details?movieId=' + ${movie.id}" style="text-decoration: none; color: inherit;">
                 <img th:src="'https://image.tmdb.org/t/p/w500' + ${movie.poster_path}" th:alt="${movie.title}">
                 <h6 th:text="${movie.title}"></h6>
                 <p><small>⭐ <span th:text="${movie.vote_average}"></span> / 10 | (<span th:text="${movie.vote_count}"></span> votes) </small></p>
