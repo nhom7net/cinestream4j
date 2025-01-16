@@ -35,64 +35,28 @@
 
 <body>
 
-<!-- Now Playing Movies Section -->
 <div class="container my-5">
     <h2 class="section-title text-center">🎥 Phim Đang Chiếu</h2>
     <div id="now-playing-movies" class="movie-section">
-        <!-- Danh sách phim sẽ hiển thị ở đây -->
+        <!-- Sử dụng Thymeleaf để hiển thị danh sách phim -->
+        <th:block th:each="movie : ${movies}">
+            <div class="movie-card">
+                <a th:href="@{/details(movieId=${movie.id})}" style="text-decoration: none; color: inherit;">
+                    <img th:src="@{'https://image.tmdb.org/t/p/w500' + ${movie.poster_path}}" th:alt="${movie.title}">
+                    <h6 th:text="${movie.title}"></h6>
+                    <p>
+                        <strong>⭐</strong>
+                        <span th:text="${movie.vote_average}"></span> / 10
+                        | (<span th:text="${movie.vote_count}">0</span> votes)
+                    </p>
+                    <p><small>Ngày chiếu: <span th:text="${movie.release_date}">N/A</span></small></p>
+                </a>
+            </div>
+        </th:block>
     </div>
 </div>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- JavaScript Fetch API -->
-<script>
-    const API_KEY = '5b3554c90c5c911c652788f8b65db269';
-    const BASE_URL = 'https://api.themoviedb.org/3';
-
-    // Gọi API để lấy phim Đang Chiếu
-    async function fetchNowPlayingMovies() {
-        const apiUrl = `${BASE_URL}/movie/now_playing?api_key=${API_KEY}&language=vi-VN`;
-
-        try {
-            const response = await fetch(apiUrl);
-            const data = await response.json();
-            displayMovies(data.results);
-        } catch (error) {
-            console.error('Lỗi khi lấy phim đang chiếu:', error);
-            document.getElementById('now-playing-movies').innerHTML = '<p class="text-danger">Không thể tải danh sách phim.</p>';
-        }
-    }
-
-    // Hiển thị danh sách phim
-    function displayMovies(movies) {
-        const container = document.getElementById('now-playing-movies');
-        container.innerHTML = '';
-
-        if (movies.length === 0) {
-            container.innerHTML = '<p class="text-center">Không có phim nào đang chiếu.</p>';
-            return;
-        }
-
-        movies.forEach(movie => {
-            const movieCard = document.createElement('div');
-            movieCard.className = 'movie-card';
-            movieCard.innerHTML = `
-                <a href="/details?movieId=${movie.id}" style="text-decoration: none; color: inherit;">
-                    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
-                    <h6>${movie.title}</h6>
-                    <p><strong>⭐</strong> ${movie.vote_average} / 10 | (${movie.vote_count || '0'} votes)</p>
-                    <p><strong>📅 Ngày chiếu:</strong> ${movie.release_date || 'N/A'}</p>
-                </a>
-            `;
-            container.appendChild(movieCard);
-        });
-    }
-
-    // Gọi API khi tải trang
-    fetchNowPlayingMovies();
-</script>
-
 </body>
 </html>

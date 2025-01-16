@@ -3,29 +3,23 @@ package qnu.nhom7.cinestream4j.controllers;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.client.RestTemplate;
+import qnu.nhom7.cinestream4j.services.tmdb.Discover;
 
-import java.util.Map;
+import java.io.IOException;
+import java.util.ArrayList;
 
 @Controller
 public class GenreController {
 
-    private final String API_KEY = "5b3554c90c5c911c652788f8b65db269";
-    private final String BASE_URL = "https://api.themoviedb.org/3/discover/movie";
-
     @GetMapping("/genres")
-    public String genreMovies(@RequestParam("genreId") String genreId,
-                              @RequestParam("genreName") String genreName,
-                              Model model) {
-        RestTemplate restTemplate = new RestTemplate();
-        String apiUrl = BASE_URL + "?api_key=" + API_KEY + "&with_genres=" + genreId + "&language=vi-VN";
+    public String showGenresPage(Model model, String genreId, String genreName) throws IOException, InterruptedException {
+        // Lấy danh sách phim theo thể loại từ API
+        ArrayList genreMovies = Discover.getMoviesByGenre(genreId);
 
-        Map<String, Object> response = restTemplate.getForObject(apiUrl, Map.class);
-
-        model.addAttribute("movies", response.get("results"));
+        // Đưa vào model
+        model.addAttribute("movies", genreMovies);
         model.addAttribute("genreName", genreName);
 
-        return "genre";
+        return "genre"; // Điều hướng tới genre.html
     }
 }

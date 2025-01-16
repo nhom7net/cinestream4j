@@ -35,64 +35,28 @@
 
 <body>
 
-<!-- Top Rated Movies Section -->
 <div class="container my-5">
     <h2 class="section-title text-center">🌟 Phim Được Đánh Giá Cao Nhất</h2>
     <div id="top-rated-movies" class="movie-section">
-        <!-- Danh sách phim sẽ hiển thị ở đây -->
+        <!-- Sử dụng Thymeleaf để hiển thị danh sách phim -->
+        <th:block th:each="movie : ${movies}">
+            <div class="movie-card">
+                <a th:href="@{/details(movieId=${movie.id})}" style="text-decoration: none; color: inherit;">
+                    <img th:src="@{'https://image.tmdb.org/t/p/w500' + ${movie.poster_path}}" th:alt="${movie.title}">
+                    <h6 th:text="${movie.title}"></h6>
+                    <p>
+                        <strong>⭐</strong>
+                        <span th:text="${movie.vote_average}"></span> / 10
+                        | (<span th:text="${movie.vote_count}">0</span> votes)
+                    </p>
+                    <p><small>Ngày phát hành: <span th:text="${movie.release_date}">N/A</span></small></p>
+                </a>
+            </div>
+        </th:block>
     </div>
 </div>
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-
-<!-- JavaScript Fetch API -->
-<script>
-    const API_KEY = '5b3554c90c5c911c652788f8b65db269';
-    const BASE_URL = 'https://api.themoviedb.org/3';
-
-    // Gọi API lấy danh sách phim Top Rated
-    async function fetchTopRatedMovies() {
-        const apiUrl = `${BASE_URL}/movie/top_rated?api_key=${API_KEY}&language=vi-VN`;
-
-        try {
-            const response = await fetch(apiUrl);
-            const data = await response.json();
-            displayMovies(data.results);
-        } catch (error) {
-            console.error('Lỗi khi lấy phim top rated:', error);
-            document.getElementById('top-rated-movies').innerHTML = '<p class="text-danger">Không thể tải danh sách phim.</p>';
-        }
-    }
-
-    // Hiển thị danh sách phim
-    function displayMovies(movies) {
-        const container = document.getElementById('top-rated-movies');
-        container.innerHTML = '';
-
-        if (movies.length === 0) {
-            container.innerHTML = '<p class="text-center">Không có phim nào để hiển thị.</p>';
-            return;
-        }
-
-        movies.forEach(movie => {
-            const movieCard = document.createElement('div');
-            movieCard.className = 'movie-card';
-            movieCard.innerHTML = `
-                <a href="/details?movieId=${movie.id}" style="text-decoration: none; color: inherit;">
-                    <img src="https://image.tmdb.org/t/p/w500${movie.poster_path}" alt="${movie.title}">
-                    <h6>${movie.title}</h6>
-                    <p><strong>⭐</strong> ${movie.vote_average} / 10 | (${movie.vote_count || '0'} votes)</p>
-                    <p><small>Ngày phát hành: ${movie.release_date || 'N/A'}</small></p>
-                </a>
-            `;
-            container.appendChild(movieCard);
-        });
-    }
-
-    // Gọi API khi tải trang
-    fetchTopRatedMovies();
-</script>
-
 </body>
 </html>
