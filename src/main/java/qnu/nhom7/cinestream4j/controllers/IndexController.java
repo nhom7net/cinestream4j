@@ -8,6 +8,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import qnu.nhom7.cinestream4j.services.supabase.Supabase;
+import qnu.nhom7.cinestream4j.services.tmdb.Discover;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -24,25 +25,16 @@ public class IndexController {
     }
 
     @GetMapping("/")
-    public String index(@CookieValue("userid") String userid, Model model) throws IOException {
+    public String index(@CookieValue("userid") String userid, Model model) throws IOException, InterruptedException {
         // temporary requires the user to login, for now.
         if (userid == null) {
             return "redirect:/login";
         }
 
-        SelectQuery query = new SelectQuery.SelectQueryBuilder()
-                .from("profiles")
-                .select("username", "full_name")
-                .filter(new Filter.FilterBuilder()
-                        .equals("id", userid)
-                        .build())
-                .build();
-
-        ArrayList response = this.client.getClient().executeSelect(query, ArrayList.class);
-        LinkedHashMap<String, String> a = (LinkedHashMap<String, String>) response.get(0);
-
-        model.addAttribute("name", a.get("full_name"));
-        model.addAttribute("username", a.get("username"));
+        var popular = Discover.getPopulars();
+        var trending = Discover.getTrending();
+        model.addAttribute("popular", popular);
+        model.addAttribute("trending", trending);
 
         return "index";
     }

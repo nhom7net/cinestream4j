@@ -9,26 +9,39 @@ import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
 
 public class Discover {
-    private final HttpClient httpClient;
-    private final ObjectMapper mapper;
+    private static final HttpClient httpClient = HttpClient.newHttpClient();
+    private static final ObjectMapper mapper = new ObjectMapper();
 
-
-    public Discover() {
-        this.httpClient = HttpClient.newHttpClient();
-        this.mapper = new ObjectMapper();
-    }
-
-    public void getPopulars() throws IOException, InterruptedException {
+    public static ArrayList getPopulars() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.themoviedb.org/3/discover/movie?include_adult=false&include_video=false&language=en-US&page=1&sort_by=popularity.desc"))
+                .uri(URI.create("https://api.themoviedb.org/3/movie/popular?language=vi-VN"))
                 .header("Content-Type", "application/json")
-                .header("Authorization", Token.ACCESS_TOKEN)
+                .header("Authorization", Token.tmdb_token)
                 .build();
 
-        HttpResponse<String> response = this.httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-        JsonNode nameNode = this.mapper.readTree(response.body());
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        JsonNode nodes = mapper.readTree(response.body());
 
+        var a = nodes.get("results").toString();
+
+        return mapper.readValue(a, ArrayList.class);
+    }
+
+    public static ArrayList getTrending() throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create("https://api.themoviedb.org/3/trending/movie/day?language=vi-VN"))
+                .header("Content-Type", "application/json")
+                .header("Authorization", Token.tmdb_token)
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        JsonNode nodes = mapper.readTree(response.body());
+
+        var a = nodes.get("results").toString();
+
+        return mapper.readValue(a, ArrayList.class);
     }
 }
