@@ -38,13 +38,27 @@
     <div th:replace="components/header :: header">
         <!-- Nếu sử dụng Thymeleaf, hãy đảm bảo file header.html nằm trong thư mục đúng -->
     </div>
-<!-- Now Playing Movies Section -->
-<div class="container my-5">
-    <h2 class="section-title text-center">🎥 Phim Đang Chiếu</h2>
-    <div id="now-playing-movies" class="movie-section">
-        <!-- Danh sách phim sẽ hiển thị ở đây -->
+    <!-- Now Playing Movies Section -->
+    <div class="container my-5">
+        <h2 class="section-title text-center">🎥 Phim Đang Chiếu</h2>
+        <div id="now-playing-movies" class="movie-section">
+            <!-- Sử dụng Thymeleaf để hiển thị danh sách phim -->
+            <th:block th:each="movie : ${movies}">
+                <div class="movie-card">
+                    <a th:href="@{/details(movieId=${movie.id})}" style="text-decoration: none; color: inherit;">
+                        <img th:src="@{'https://image.tmdb.org/t/p/w500' + ${movie.poster_path}}" th:alt="${movie.title}">
+                        <h6 th:text="${movie.title}"></h6>
+                        <p>
+                            <strong>⭐</strong>
+                            <span th:text="${movie.vote_average}"></span> / 10
+                            | (<span th:text="${movie.vote_count}">0</span> votes)
+                        </p>
+                        <p><small>Ngày chiếu: <span th:text="${movie.release_date}">N/A</span></small></p>
+                    </a>
+                </div>
+            </th:block>
+        </div>
     </div>
-</div>
 </div>
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

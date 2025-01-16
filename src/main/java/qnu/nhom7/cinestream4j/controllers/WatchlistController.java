@@ -75,11 +75,11 @@ public class WatchlistController {
         }
     }
 
-
     @PostMapping("/add")
     public String addToWatchlist(@RequestBody Map<String, String> payload,
                                             HttpSession session,
                                             Model model) {
+
         String movieId = payload.get("movieId");
         String userId = (String) session.getAttribute("userid");
 
