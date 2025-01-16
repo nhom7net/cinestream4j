@@ -25,10 +25,6 @@ public class DetailsController {
 
             if (response.getStatusCode().is2xxSuccessful()) {
                 Map<String, Object> movieData = response.getBody();
-
-                // In dữ liệu để kiểm tra
-                System.out.println("Dữ liệu từ API: " + movieData);
-
                 model.addAttribute("movie", movieData);
             } else {
                 model.addAttribute("error", "Không thể tải thông tin phim.");
