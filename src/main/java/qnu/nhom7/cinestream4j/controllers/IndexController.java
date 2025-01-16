@@ -7,7 +7,6 @@ import org.springframework.web.bind.annotation.CookieValue;
 import org.springframework.web.bind.annotation.GetMapping;
 import qnu.nhom7.cinestream4j.services.supabase.Supabase;
 import qnu.nhom7.cinestream4j.services.tmdb.Discover;
-import qnu.nhom7.cinestream4j.services.tmdb.Movie;
 
 import java.io.IOException;
 
@@ -30,12 +29,9 @@ public class IndexController {
 
         var popular = Discover.getPopulars();
         var trending = Discover.getTrending();
-        var genre = Discover.getGenreList();
-
-
         model.addAttribute("popular", popular);
         model.addAttribute("trending", trending);
-        model.addAttribute("genres", genre);
+
         return "index";
     }
 }
