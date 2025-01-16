@@ -31,4 +31,18 @@ public class Movie {
         return mapper.readValue(a, LinkedHashMap.class);
     }
 
+    public static ArrayList getAllCasts(String movieID) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("https://api.themoviedb.org/3/movie/%s/credits?language=vi-VN", movieID)))
+                .header("Content-Type", "application/json")
+                .header("Authorization", Token.tmdb_token)
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        JsonNode nodes = mapper.readTree(response.body());
+
+        var a = nodes.get("cast").toString();
+
+        return mapper.readValue(a, ArrayList.class);
+    }
 }
