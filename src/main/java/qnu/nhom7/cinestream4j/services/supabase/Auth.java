@@ -1,7 +1,8 @@
-package qnu.nhom7.cinestream4j.supabase;
+package qnu.nhom7.cinestream4j.services.supabase;
 
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import qnu.nhom7.cinestream4j.services.Token;
 
 import java.io.IOException;
 import java.net.URI;
@@ -20,9 +21,9 @@ public class Auth {
 
     public String signUp(String email, String password) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(ConnectionString.getSupabaseUrl() + "/auth/v1/signup"))
+                .uri(URI.create(Token.supabaseUrl + "/auth/v1/signup"))
                 .header("Content-Type", "application/json")
-                .header("apikey", ConnectionString.getServiceKey())
+                .header("apikey", Token.serviceKey)
                 .POST(HttpRequest.BodyPublishers.ofString("{\"email\":\"" + email + "\", \"password\":\"" + password + "\"}"))
                 .build();
 
@@ -39,9 +40,9 @@ public class Auth {
 
     public String signIn(String email, String password) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(ConnectionString.getSupabaseUrl() + "/auth/v1/token?grant_type=password"))
+                .uri(URI.create(Token.supabaseUrl + "/auth/v1/token?grant_type=password"))
                 .header("Content-Type", "application/json")
-                .header("apikey", ConnectionString.getServiceKey())
+                .header("apikey", Token.supabaseUrl)
                 .POST(HttpRequest.BodyPublishers.ofString("{\"email\":\"" + email + "\", \"password\":\"" + password + "\"}"))
                 .build();
         HttpResponse<String> response = this.httpClient.send(request, HttpResponse.BodyHandlers.ofString());
