@@ -37,6 +37,20 @@
     </div>
 </div>
 
+<div class="container mt-3">
+    <!-- Hiển thị thông báo lỗi -->
+    <div th:if="${errorMessage}" class="alert alert-danger alert-dismissible fade show" role="alert">
+        <span th:text="${errorMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+
+    <!-- Hiển thị thông báo thông tin -->
+    <div th:if="${infoMessage}" class="alert alert-info alert-dismissible fade show" role="alert">
+        <span th:text="${infoMessage}"></span>
+        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+</div>
+
 <!-- Xử lý xóa phim khỏi danh sách -->
 <script>
     const API_KEY = '5b3554c90c5c911c652788f8b65db269';
