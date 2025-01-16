@@ -18,7 +18,7 @@ public class Movie {
 
     public static LinkedHashMap getInfo(String movieID) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create(String.format("https://api.themoviedb.org/3/movie/%s?language=vi-VN", movieID)))
+                .uri(URI.create(String.format("https://api.themoviedb.org/3/movie/%s?language=vi-VN&append_to_response=videos", movieID)))
                 .header("Content-Type", "application/json")
                 .header("Authorization", Token.tmdb_token)
                 .build();

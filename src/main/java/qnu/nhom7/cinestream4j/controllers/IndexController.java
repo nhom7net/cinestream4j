@@ -1,6 +1,7 @@
 package qnu.nhom7.cinestream4j.controllers;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.CookieValue;
@@ -22,8 +23,10 @@ public class IndexController {
     }
 
     @GetMapping("/")
-    public String index(@CookieValue("userid") String userid, Model model) throws IOException, InterruptedException {
+    public String index(Model model, HttpSession session) throws IOException, InterruptedException {
         // temporary requires the user to login, for now.
+        var userid = session.getAttribute("userid");
+
         if (userid == null) {
             return "redirect:/login";
         }

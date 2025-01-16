@@ -39,9 +39,7 @@
 <body>
 <div class="main-container">
     <!-- Header -->
-    <div th:replace="components/header :: header">
-        <!-- Nếu sử dụng Thymeleaf, hãy đảm bảo file header.html nằm trong thư mục đúng -->
-    </div>
+    <div th:replace="components/header :: header"></div>
   
     <!-- Search Results -->
     <div class="container my-5">
@@ -54,8 +52,8 @@
     <!-- Genres Section -->
     <div class="container my-5">
         <h2 class="section-title">📚 Thể loại phim</h2>
-        <div id="genre-list" class="d-flex flex-wrap justify-content-center" th:each="genre: ${genres}">
-            <a th:href="'/genres?genreId=' + ${genre.id} + '&genreName=' + ${genre.name}">
+        <div id="genre-list" class="d-flex flex-wrap justify-content-center">
+            <a th:href="'/genres?genreId=' + ${genre.id} + '&genreName=' + ${genre.name}" th:each="genre: ${genres}">
                 <button class="btn btn-outline-primary genre-button" th:text="${genre.name}"></button>
             </a>
         </div>
@@ -63,8 +61,8 @@
 
     <div class="container my-5">
         <h2 class="section-title">🌟 Phim Phổ Biến</h2>
-        <div id="trending-movies" class="movie-section" th:each="movie: ${popular}">
-            <div class="movie-card">
+        <div id="trending-movies" class="movie-section">
+            <div class="movie-card" th:each="movie: ${popular}">
                 <a th:href="'/details?movieId=' + ${movie.id}" style="text-decoration: none; color: inherit;">
                     <img th:src="'https://image.tmdb.org/t/p/w500' + ${movie.poster_path}" th:alt="${movie.title}">
                     <h6 th:text="${movie.title}"></h6>
@@ -77,8 +75,8 @@
 
     <div class="container my-5">
         <h2 class="section-title">🔥 Phim Đang Thịnh Hành</h2>
-        <div id="popular-movies" class="movie-section" th:each="movie: ${trending}">
-            <div class="movie-card">
+        <div id="popular-movies" class="movie-section">
+            <div class="movie-card" th:each="movie: ${trending}">
                 <a href="/details?movieId=${movie.id}" style="text-decoration: none; color: inherit;">
                     <img th:src="'https://image.tmdb.org/t/p/w500' + ${movie.poster_path}" th:alt="${movie.title}">
                     <h6 th:text="${movie.title}"></h6>
