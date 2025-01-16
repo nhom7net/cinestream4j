@@ -8,5 +8,5 @@ public class Token {
 
     // Supabase
     public final static String supabaseUrl = "https://vfplyrnitdcuwmkjctrn.supabase.co";
-    public final static String serviceKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZmcGx5cm5pdGRjdXdta2pjdHJuIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzY5NTg2MTYsImV4cCI6MjA1MjUzNDYxNn0.HzwfTVcMurHpo6YmydA6pB_AFTlb3GTe3qoucUzKGCU";
+    public final static String serviceKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InZmcGx5cm5pdGRjdXdta2pjdHJuIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTczNjk1ODYxNiwiZXhwIjoyMDUyNTM0NjE2fQ.pjq6M_Zngcg2L5i4Hc5o82OKU2nH0O2CEBcAzdRddRk";
 }

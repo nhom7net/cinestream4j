@@ -42,7 +42,7 @@ public class Auth {
         HttpRequest request = HttpRequest.newBuilder()
                 .uri(URI.create(Token.supabaseUrl + "/auth/v1/token?grant_type=password"))
                 .header("Content-Type", "application/json")
-                .header("apikey", Token.supabaseUrl)
+                .header("apikey", Token.serviceKey)
                 .POST(HttpRequest.BodyPublishers.ofString("{\"email\":\"" + email + "\", \"password\":\"" + password + "\"}"))
                 .build();
         HttpResponse<String> response = this.httpClient.send(request, HttpResponse.BodyHandlers.ofString());
