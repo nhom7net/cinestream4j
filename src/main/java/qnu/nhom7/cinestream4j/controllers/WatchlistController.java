@@ -14,8 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import qnu.nhom7.cinestream4j.services.supabase.Supabase;
+import qnu.nhom7.cinestream4j.services.tmdb.Discover;
+import qnu.nhom7.cinestream4j.services.tmdb.Movie;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 @Controller
@@ -35,7 +38,7 @@ public class WatchlistController {
         // Kiểm tra nếu chưa đăng nhập
         if (userId == null) {
             model.addAttribute("errorMessage", "⚠️ Bạn cần đăng nhập để xem danh sách.");
-            return "details";
+            return "watchlist";
         }
 
         Filter filter = new Filter.FilterBuilder()
@@ -50,19 +53,18 @@ public class WatchlistController {
                     .filter(filter)
                     .build();
 
-            var response = client.getClient().executeSelect(query, ArrayList.class);
+            ArrayList<LinkedHashMap<String, String>> response;
+            response = client.getClient().executeSelect(query, ArrayList.class);
 
-            // Chuẩn hóa response
-            var watchlist = response.stream()
-                    .map(item -> Map.of(
-                            "movieId", ((Map<String, Object>) item).get("movieId")
-                    ))
-                    .toList();
-
-            model.addAttribute("watchlist", watchlist);
-
-            if (watchlist.isEmpty()) {
+            if (response.isEmpty()) {
                 model.addAttribute("infoMessage", "📭 Danh sách xem của bạn đang trống.");
+            }
+            else {
+                ArrayList<LinkedHashMap<String, String>> movies = new ArrayList<>();
+                for (LinkedHashMap<String, String> movie: response) {
+                    movies.add(Movie.getInfo(movie.get("movieId")));
+                }
+                model.addAttribute("watchlist", movies);
             }
 
             return "watchlist";
