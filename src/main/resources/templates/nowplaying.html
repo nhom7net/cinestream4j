@@ -34,7 +34,10 @@
 </head>
 
 <body>
-
+<div class="main-container">
+    <div th:replace="components/header :: header">
+        <!-- Nếu sử dụng Thymeleaf, hãy đảm bảo file header.html nằm trong thư mục đúng -->
+    </div>
 <!-- Now Playing Movies Section -->
 <div class="container my-5">
     <h2 class="section-title text-center">🎥 Phim Đang Chiếu</h2>
@@ -42,7 +45,7 @@
         <!-- Danh sách phim sẽ hiển thị ở đây -->
     </div>
 </div>
-
+</div>
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 
@@ -51,9 +54,13 @@
     const API_KEY = '5b3554c90c5c911c652788f8b65db269';
     const BASE_URL = 'https://api.themoviedb.org/3';
 
+    // Lấy tham số ngôn ngữ từ URL
+    const params = new URLSearchParams(window.location.search);
+    const lang = params.get('lang') || 'vi'; // Mặc định là 'vi'
+
     // Gọi API để lấy phim Đang Chiếu
     async function fetchNowPlayingMovies() {
-        const apiUrl = `${BASE_URL}/movie/now_playing?api_key=${API_KEY}&language=vi-VN`;
+        const apiUrl = `${BASE_URL}/movie/now_playing?api_key=${API_KEY}&language=${lang}`;
 
         try {
             const response = await fetch(apiUrl);
@@ -71,7 +78,7 @@
         container.innerHTML = '';
 
         if (movies.length === 0) {
-            container.innerHTML = '<p class="text-center">Không có phim nào đang chiếu.</p>';
+            container.innerHTML = '<p class="text-center" th:text="#{now-playing-movies.no_movies}">Không có phim nào đang chiếu.</p>';
             return;
         }
 

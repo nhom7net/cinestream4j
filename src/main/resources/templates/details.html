@@ -88,10 +88,13 @@
     // Lấy movieId từ URL
     const urlParams = new URLSearchParams(window.location.search);
     const movieId = urlParams.get('movieId');
+    // Lấy tham số ngôn ngữ từ URL
+    const params = new URLSearchParams(window.location.search);
+    const lang = params.get('lang') || 'vi'; // Mặc định là 'vi'
 
     // Gọi API lấy thông tin chi tiết phim
-    const apiUrl = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}&language=en-US&append_to_response=videos`;
-    const castApiUrl = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${API_KEY}&language=en-US`;
+    const apiUrl = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}&language=${lang}&append_to_response=videos`;
+    const castApiUrl = `https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${API_KEY}&language=${lang}`;
 
     async function fetchMovieDetails() {
         try {
