@@ -80,6 +80,7 @@
     </style>
 </head>
 <body>
+<div th:replace="components/header :: header"></div>
 
 <div class="container mt-5">
     <div class="row" id="movie-container">
@@ -87,7 +88,17 @@
             <img th:alt="${movie.title}" class="movie-poster" th:src="'https://image.tmdb.org/t/p/w500' + ${movie.poster_path}">
             <div class="mt-4">
                 <h5>Công ty sản xuất:</h5>
-                ${productionCompanies}
+                <div th:each="company: ${movie.production_companies}">
+                    <div class="d-flex align-items-center mb-2">
+                        <a th:href="'/company?companyId=' + ${company.id}" target="_self" style="text-decoration: none; color: inherit;">
+                            <img th:src="'https://image.tmdb.org/t/p/w200' + ${company.logo_path}"
+                                 th:alt="${company.name}"
+                                 class="production-company-logo">
+                            <strong th:text="${company.name}"></strong>
+                            <small th:text="${company.origin_country}"></small>
+                        </a>
+                    </div>
+                </div>
             </div>
         </div>
         <div class="col-md-8 movie-details">
@@ -110,10 +121,10 @@
     </div>
 
     <!-- Cast Section -->
+    <h2 class="section-title text-center">🎭 Danh Sách Diễn Viên</h2>
     <div class="mt-5">
-        <h2 class="section-title text-center">🎭 Danh Sách Diễn Viên</h2>
-        <div class="row" id="cast-container" th:each="cast: ${casts}">
-            <div class="col-md-2 mb-4 cast-card">
+        <div class="row" id="cast-container">
+            <div class="col-md-2 mb-4 cast-card" th:each="cast: ${casts}">
                 <img th:alt="${cast.name}" th:src="'https://image.tmdb.org/t/p/w200' + ${cast.profile_path}">
                 <h6 th:text="${cast.name}"></h6>
                 <p><small th:text="${cast.character}"></small></p>
@@ -124,26 +135,9 @@
 
 <script>
     function displayMovieDetails(movie) {
-        const container = document.getElementById('movie-container');
-
-        // Tạo danh sách các hãng phim với liên kết điều hướng
-        const productionCompanies = movie.production_companies?.map(company => `
-        <div class="d-flex align-items-center mb-2">
-            <a href="/company?companyId=${company.id}" target="_self" style="text-decoration: none; color: inherit;">
-                <img src="https://image.tmdb.org/t/p/w200${company.logo_path}"
-                     alt="${company.name}"
-                     onerror="this.onerror=null;this.src='https://via.placeholder.com/50';"
-                     class="production-company-logo">
-                <strong>${company.name}</strong>
-                <small>(${company.origin_country || 'N/A'})</small>
-            </a>
-        </div>
-    `).join('') || '<p>Không có thông tin công ty sản xuất.</p>';
 
         // Lấy video trailer đầu tiên nếu có
         const trailer = movie.videos?.results.find(video => video.type === "Trailer" && video.site === "YouTube");
-
-        container.innerHTML = ``;
     }
 
 
@@ -167,12 +161,22 @@
                 },
                 body: data
             });
-            const result = await response.json();
-            if (response.ok) {
-                alert(result.message);
+
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                const result = await response.json();
+
+                if (response.ok) {
+                    console.log(result);
+                    alert(result.successMessage);
+                } else {
+                    const errorData = await response.json();
+                    alert('Thêm phim không thành công: ' + errorData.message);
+                }
             } else {
-                const errorData = await response.json();
-                alert('Thêm phim không thành công: ' + errorData.message);
+                const errorText = await response.text();
+                console.error('Phản hồi không phải JSON:', errorText);
+                alert('Đã xảy ra lỗi không xác định. Vui lòng thử lại.');
             }
         } catch (error) {
             console.error('Lỗi khi thêm vào danh sách:', error);

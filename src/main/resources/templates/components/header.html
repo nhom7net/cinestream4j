@@ -62,7 +62,9 @@
           <li class="nav-item">
             <a class="nav-link" href="/people" th:text="#{header.people}">👤Actor</a>
           </li>
-
+          <li class="nav-item">
+            <a class="nav-link" href="/watchlist">Watchlist</a>
+          </li>
         </ul>
         <div class="dropdown ms-auto">
           <button class="btn btn-outline-light dropdown-toggle" type="button" id="languageDropdown" data-bs-toggle="dropdown" aria-expanded="false">
@@ -73,6 +75,10 @@
             <li><a class="dropdown-item" href="#" onclick="changeLanguage('vi')">Tiếng Việt</a></li>
           </ul>
         </div>
+        <div>
+          <a class="btn btn-primary" href="/login">Login</a>
+          <a class="btn btn-danger" href="/logout">Logout</a>
+        </div>
 
         <script>
           function changeLanguage(lang) {
@@ -81,11 +87,13 @@
             url.searchParams.set('lang', lang);
             window.location.href = url.toString();
           }
+
+          document.getElementById("search-form").addEventListener('submit', e => {
+            e.preventDefault();
+            window.location.replace("/?search=" + document.getElementById("search-input").value)
+          })
         </script>
-
-
       </div>
-
     </div>
   </nav>
 
