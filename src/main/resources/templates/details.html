@@ -33,6 +33,11 @@
             cursor: pointer;
         }
 
+        .cast-card a {
+            text-decoration: none;
+            color: black;
+        }
+
         .cast-card img {
             width: 100px;
             height: 100px;
@@ -125,15 +130,18 @@
     <div class="mt-5">
         <div class="row" id="cast-container">
             <div class="col-md-2 mb-4 cast-card" th:each="cast: ${casts}">
-                <img th:alt="${cast.name}" th:src="'https://image.tmdb.org/t/p/w200' + ${cast.profile_path}">
-                <h6 th:text="${cast.name}"></h6>
-                <p><small th:text="${cast.character}"></small></p>
+                <a th:href="'/cast?personId=' + ${cast.id}" target="_self">
+                    <img th:alt="${cast.name}" th:src="'https://image.tmdb.org/t/p/w200' + ${cast.profile_path}">
+                    <h6 th:text="${cast.name}"></h6>
+                    <p><small th:text="${cast.character}"></small></p>
+                </a>
             </div>
         </div>
     </div>
 </div>
 
 <script>
+
     function displayMovieDetails(movie) {
 
         // Lấy video trailer đầu tiên nếu có
