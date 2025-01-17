@@ -161,12 +161,22 @@
                 },
                 body: data
             });
-            const result = await response.json();
-            if (response.ok) {
-                alert(result.message);
+
+            const contentType = response.headers.get('content-type');
+            if (contentType && contentType.includes('application/json')) {
+                const result = await response.json();
+
+                if (response.ok) {
+                    console.log(result);
+                    alert(result.successMessage);
+                } else {
+                    const errorData = await response.json();
+                    alert('Thêm phim không thành công: ' + errorData.message);
+                }
             } else {
-                const errorData = await response.json();
-                alert('Thêm phim không thành công: ' + errorData.message);
+                const errorText = await response.text();
+                console.error('Phản hồi không phải JSON:', errorText);
+                alert('Đã xảy ra lỗi không xác định. Vui lòng thử lại.');
             }
         } catch (error) {
             console.error('Lỗi khi thêm vào danh sách:', error);

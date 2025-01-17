@@ -76,21 +76,21 @@ public class WatchlistController {
     }
 
     @PostMapping("/add")
-    public String addToWatchlist(@RequestBody Map<String, String> payload,
-                                            HttpSession session,
-                                            Model model) {
+    public ResponseEntity<?> addToWatchlist(@RequestBody Map<String, String> payload,
+                                                     HttpSession session,
+                                                     Model model) {
 
         String movieId = payload.get("movieId");
         String userId = (String) session.getAttribute("userid");
 
         if (userId == null) {
             model.addAttribute("errorMessage", "⚠️ Bạn cần đăng nhập để thêm vào danh sách!");
-            return "watchlist";
+            return ResponseEntity.status(401).body("Bạn cần đăng nhập để thêm vào danh sách!");
         }
 
         if (movieId == null || movieId.isEmpty()) {
             model.addAttribute("errorMessage", "❗ Movie ID không hợp lệ.");
-            return "watchlist";
+            return ResponseEntity.status(404).body("Movie ID không hợp lệ!");
         }
 
         try {
@@ -109,7 +109,7 @@ public class WatchlistController {
 
             if (!existingMovies.isEmpty()) {
                 model.addAttribute("alertMessage", "⚠️ Phim đã có trong danh sách!");
-                return "redirect:/watchlist";
+                return ResponseEntity.status(402).body("Phim đã có trong danh sách!");
             }
 
             InsertQuery query = new InsertQuery.InsertQueryBuilder()
@@ -118,16 +118,17 @@ public class WatchlistController {
                             "userid", userId,
                             "movieId", movieId
                     ))
+                    .select()
                     .build();
 
             client.getClient().executeInsert(query, String.class);
 
             model.addAttribute("successMessage", "✅ Đã thêm phim vào danh sách thành công!");
-            return "watchlist";
+            return ResponseEntity.ok(Map.of("successMessage", "Đã thêm phim vào danh sách thành công!"));
 
         } catch (Exception e) {
             model.addAttribute("errorMessage", "❌ Lỗi server. Vui lòng thử lại sau.");
-            return "watchlist";
+            return ResponseEntity.status(500).body("Lỗi server. Vui lòng thử lại sau.");
         }
     }
 
@@ -152,7 +153,9 @@ public class WatchlistController {
         try {
             var deleteQuery = new DeleteQuery.DeleteQueryBuilder()
                     .from("watchlist")
+                    .delete()
                     .filter(filter)
+                    .select()
                     .build();
 
             client.getClient().executeDelete(deleteQuery, String.class);
@@ -160,6 +163,7 @@ public class WatchlistController {
             return ResponseEntity.ok(Map.of("message", "Đã xóa phim khỏi danh sách!"));
 
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(500).body(Map.of("message", "Lỗi server."));
         }
     }
