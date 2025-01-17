@@ -42,7 +42,7 @@
     <div th:replace="components/header :: header">
         <!-- Nếu sử dụng Thymeleaf, hãy đảm bảo file header.html nằm trong thư mục đúng -->
     </div>
-  
+
     <!-- Search Results -->
     <div class="container my-5">
         <h2 class="section-title">🔍 Kết quả tìm kiếm</h2>
@@ -116,7 +116,7 @@
         const query = document.getElementById('search-input').value;
         if (query.trim() === '') return;
 
-        const searchUrl = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=vi-VN`;
+        const searchUrl = `${BASE_URL}/search/movie?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=${lang}`;
         try {
             const response = await fetch(searchUrl);
             const data = await response.json();

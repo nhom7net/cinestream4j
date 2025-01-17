@@ -22,20 +22,21 @@ public class IndexController {
     }
 
     @GetMapping("/")
-    public String index(@CookieValue("userid") String userid, Model model) throws IOException, InterruptedException {
+    public String index(@CookieValue(value = "userid", required = false) String userid, @CookieValue(value = "lang", defaultValue = "vi-VN") String lang, Model model) throws IOException, InterruptedException {
         // temporary requires the user to login, for now.
         if (userid == null) {
             return "redirect:/login";
         }
 
-        var popular = Discover.getPopulars();
-        var trending = Discover.getTrending();
-        var genre = Discover.getGenreList();
+        var popular = Discover.getPopulars(lang);
+        var trending = Discover.getTrending(lang);
+        var genre = Discover.getGenreList(lang);
 
 
         model.addAttribute("popular", popular);
         model.addAttribute("trending", trending);
         model.addAttribute("genres", genre);
+        model.addAttribute("lang", lang);
         return "index";
     }
 }

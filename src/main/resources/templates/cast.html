@@ -54,11 +54,13 @@
 
 <script>
   const API_KEY = '5b3554c90c5c911c652788f8b65db269';
+  const params = new URLSearchParams(window.location.search);
+  const lang = params.get('lang') || 'vi'; // Mặc định là 'vi'
 
   const urlParams = new URLSearchParams(window.location.search);
   const personId = urlParams.get('personId');
-  const personApiUrl = `https://api.themoviedb.org/3/person/${personId}?api_key=${API_KEY}&language=vi-VN`;
-  const movieCreditsApiUrl = `https://api.themoviedb.org/3/person/${personId}/movie_credits?api_key=${API_KEY}&language=vi-VN`;
+  const personApiUrl = `https://api.themoviedb.org/3/person/${personId}?api_key=${API_KEY}&language=${lang}`;
+  const movieCreditsApiUrl = `https://api.themoviedb.org/3/person/${personId}/movie_credits?api_key=${API_KEY}&language=${lang}`;
 
   let castData = {};
 
