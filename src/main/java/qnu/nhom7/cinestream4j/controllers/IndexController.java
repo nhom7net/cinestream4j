@@ -31,7 +31,6 @@ public class IndexController {
         model.addAttribute("popular", popular);
         model.addAttribute("trending", trending);
         model.addAttribute("genres", genre);
-        model.addAttribute("lang", lang);
         return "index";
     }
 }
