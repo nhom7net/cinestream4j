@@ -10,6 +10,7 @@ body {
     background-image: url(../images/background.png);
     background-repeat: no-repeat;
     background-size: cover;
+    height: 100vh;
 }
 
 .background {
@@ -41,7 +42,6 @@ body {
 }
 
 form {
-    height: 520px;
     width: 400px;
     background-color: rgba(255, 255, 255, 0.1);
     position: absolute;
@@ -72,7 +72,7 @@ form h3 {
 
 label {
     display: block;
-    margin-top: 30px;
+    margin-top: 10px;
     font-size: 16px;
     font-weight: bold;
 }
@@ -90,20 +90,12 @@ input {
 }
 
 button {
-    margin-top: 50px;
-    width: 100%;
-    background-color: #ffffff;
-    color: #080710;
-    padding: 15px 0;
-    font-size: 18px;
-    font-weight: 600;
-    border-radius: 5px;
-    cursor: pointer;
+    margin-top: 10px;
 }
 
 a {
     display: block;
-    margin-top: 30px;
+    margin-top: 10px;
     font-size: 16px;
     font-weight: bold;
 }

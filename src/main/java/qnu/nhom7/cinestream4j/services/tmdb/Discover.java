@@ -17,9 +17,9 @@ public class Discover {
     private static final HttpClient httpClient = HttpClient.newHttpClient();
     private static final ObjectMapper mapper = new ObjectMapper();
 
-    public static ArrayList getPopulars(String lang) throws IOException, InterruptedException {
+    public static ArrayList getPopulars() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.themoviedb.org/3/movie/popular?language="+ lang))
+                .uri(URI.create("https://api.themoviedb.org/3/movie/popular?language=vi-VN"))
                 .header("Content-Type", "application/json")
                 .header("Authorization", Token.tmdb_token)
                 .build();
@@ -27,12 +27,14 @@ public class Discover {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         JsonNode nodes = mapper.readTree(response.body());
 
-        return mapper.readValue(nodes.get("results").toString(), ArrayList.class);
+        var a = nodes.get("results").toString();
+
+        return mapper.readValue(a, ArrayList.class);
     }
 
-    public static ArrayList getTrending(String lang) throws IOException, InterruptedException {
+    public static ArrayList getTrending() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.themoviedb.org/3/trending/movie/day?language="+ lang))
+                .uri(URI.create("https://api.themoviedb.org/3/trending/movie/day?language=vi-VN"))
                 .header("Content-Type", "application/json")
                 .header("Authorization", Token.tmdb_token)
                 .build();
@@ -40,12 +42,14 @@ public class Discover {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         JsonNode nodes = mapper.readTree(response.body());
 
-        return mapper.readValue(nodes.get("results").toString(), ArrayList.class);
+        var a = nodes.get("results").toString();
+
+        return mapper.readValue(a, ArrayList.class);
     }
 
-    public static ArrayList getGenreList(String lang) throws IOException, InterruptedException {
+    public static ArrayList getGenreList() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.themoviedb.org/3/genre/movie/list?language=" + lang))
+                .uri(URI.create("https://api.themoviedb.org/3/genre/movie/list?language=vi-VN"))
                 .header("Content-Type", "application/json")
                 .header("Authorization", Token.tmdb_token)
                 .build();
@@ -53,12 +57,14 @@ public class Discover {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         JsonNode nodes = mapper.readTree(response.body());
 
-        return mapper.readValue(nodes.get("genres").toString(), ArrayList.class);
+        var a = nodes.get("genres").toString();
+
+        return mapper.readValue(a, ArrayList.class);
     }
 
-    public static ArrayList getTopRated(String lang) throws IOException, InterruptedException {
+    public static ArrayList getTopRated() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.themoviedb.org/3/movie/top_rated?language=" + lang))
+                .uri(URI.create("https://api.themoviedb.org/3/movie/top_rated?language=vi-VN"))
                 .header("Content-Type", "application/json")
                 .header("Authorization", Token.tmdb_token)
                 .build();
@@ -66,12 +72,14 @@ public class Discover {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         JsonNode nodes = mapper.readTree(response.body());
 
-        return mapper.readValue(nodes.get("results").toString(), ArrayList.class);
+        var a = nodes.get("results").toString();
+
+        return mapper.readValue(a, ArrayList.class);
     }
 
-    public static ArrayList getUpcoming(String lang) throws IOException, InterruptedException {
+    public static ArrayList getUpcoming() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.themoviedb.org/3/movie/upcoming?language=" + lang))
+                .uri(URI.create("https://api.themoviedb.org/3/movie/upcoming?language=vi-VN"))
                 .header("Content-Type", "application/json")
                 .header("Authorization", Token.tmdb_token)
                 .build();
@@ -79,12 +87,14 @@ public class Discover {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         JsonNode nodes = mapper.readTree(response.body());
 
-        return mapper.readValue(nodes.get("results").toString(), ArrayList.class);
+        var a = nodes.get("results").toString();
+
+        return mapper.readValue(a, ArrayList.class);
     }
 
-    public static ArrayList getNowPlaying(String lang) throws IOException, InterruptedException {
+    public static ArrayList getNowPlaying() throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.themoviedb.org/3/movie/now_playing?language=" + lang))
+                .uri(URI.create("https://api.themoviedb.org/3/movie/now_playing?language=vi-VN"))
                 .header("Content-Type", "application/json")
                 .header("Authorization", Token.tmdb_token)
                 .build();
@@ -92,12 +102,14 @@ public class Discover {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         JsonNode nodes = mapper.readTree(response.body());
 
-        return mapper.readValue(nodes.get("results").toString(), ArrayList.class);
+        var a = nodes.get("results").toString();
+
+        return mapper.readValue(a, ArrayList.class);
     }
 
-    public static ArrayList getMoviesByGenre(String genreId, String lang) throws IOException, InterruptedException {
+    public static ArrayList getMoviesByGenre(String genreId) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.themoviedb.org/3/discover/movie?language=" + lang + "&with_genres=" + genreId))
+                .uri(URI.create("https://api.themoviedb.org/3/discover/movie?language=vi-VN&with_genres=" + genreId))
                 .header("Content-Type", "application/json")
                 .header("Authorization", Token.tmdb_token)
                 .build();
@@ -105,12 +117,14 @@ public class Discover {
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
         JsonNode nodes = mapper.readTree(response.body());
 
-        return mapper.readValue(nodes.get("results").toString(), ArrayList.class);
+        var a = nodes.get("results").toString();
+
+        return mapper.readValue(a, ArrayList.class);
     }
 
-    public static Map<String, Object> getCompanyDetails(String companyId, String lang) throws IOException, InterruptedException {
+    public static Map<String, Object> getCompanyDetails(String companyId) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.themoviedb.org/3/company/" + companyId + "?language=" + lang))
+                .uri(URI.create("https://api.themoviedb.org/3/company/" + companyId + "?language=vi-VN"))
                 .header("Content-Type", "application/json")
                 .header("Authorization", Token.tmdb_token)
                 .build();
@@ -119,9 +133,9 @@ public class Discover {
         return mapper.readValue(response.body(), Map.class);
     }
 
-    public static ArrayList getMoviesByCompany(String companyId, String lang) throws IOException, InterruptedException {
+    public static ArrayList getMoviesByCompany(String companyId) throws IOException, InterruptedException {
         HttpRequest request = HttpRequest.newBuilder()
-                .uri(URI.create("https://api.themoviedb.org/3/discover/movie?with_companies=" + companyId + "&language="+lang))
+                .uri(URI.create("https://api.themoviedb.org/3/discover/movie?with_companies=" + companyId + "&language=vi-VN"))
                 .header("Content-Type", "application/json")
                 .header("Authorization", Token.tmdb_token)
                 .build();

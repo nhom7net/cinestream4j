@@ -54,6 +54,7 @@
 </head>
 
 <body>
+<div th:replace="components/header :: header"></div>
 
 <!-- Genre Movies Section -->
 <div class="container my-5">
@@ -62,7 +63,7 @@
         <!-- Danh sách phim sẽ hiển thị ở đây -->
         <th:block th:each="movie : ${movies}">
             <div class="col-md-3 movie-card">
-                <a href="/details?movieId=${movie.id}" style="text-decoration: none; color: inherit;">
+                <a th:href="'/details?movieId=' + ${movie.id}" style="text-decoration: none; color: inherit;">
                     <div class="card">
                         <img th:src="'https://image.tmdb.org/t/p/w500' + ${movie.poster_path}" class="card-img-top" th:alt="${movie.title}">
                         <div class="card-body">
