@@ -10,6 +10,8 @@ import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
 import java.util.Map;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
 
 public class Movie {
     private static final HttpClient httpClient = HttpClient.newHttpClient();
@@ -26,7 +28,6 @@ public class Movie {
             .build();
 
         HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
-
         // Kiểm tra response
         if (response.statusCode() != 200) {
             throw new IOException("Error fetching movie data: " + response.body());
@@ -35,5 +36,20 @@ public class Movie {
         JsonNode nodes = mapper.readTree(response.body());
 
         return mapper.convertValue(nodes, Map.class); // Chuyển đổi thành Map<String, Object>
+    }
+    
+    public static ArrayList getAllCasts(String movieID) throws IOException, InterruptedException {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(String.format("https://api.themoviedb.org/3/movie/%s/credits?language=vi-VN", movieID)))
+                .header("Content-Type", "application/json")
+                .header("Authorization", Token.tmdb_token)
+                .build();
+
+        HttpResponse<String> response = httpClient.send(request, HttpResponse.BodyHandlers.ofString());
+        JsonNode nodes = mapper.readTree(response.body());
+
+        var a = nodes.get("cast").toString();
+
+        return mapper.readValue(a, ArrayList.class);
     }
 }
