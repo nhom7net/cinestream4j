@@ -42,16 +42,16 @@ public class WatchlistController {
         }
 
         Filter filter = new Filter.FilterBuilder()
-                .equals("userid", userId)
-                .build();
+            .equals("userid", userId)
+            .build();
 
         try {
             // Lấy danh sách từ Supabase
             SelectQuery query = new SelectQuery.SelectQueryBuilder()
-                    .from("watchlist")
-                    .select("*")
-                    .filter(filter)
-                    .build();
+                .from("watchlist")
+                .select("*")
+                .filter(filter)
+                .build();
 
             ArrayList<LinkedHashMap<String, String>> response;
             response = client.getClient().executeSelect(query, ArrayList.class);
@@ -60,7 +60,7 @@ public class WatchlistController {
                 model.addAttribute("infoMessage", "📭 Danh sách xem của bạn đang trống.");
             }
             else {
-                ArrayList<LinkedHashMap<String, String>> movies = new ArrayList<>();
+                ArrayList<Map<String, Object>> movies = new ArrayList<>();
                 for (LinkedHashMap<String, String> movie: response) {
                     movies.add(Movie.getInfo(movie.get("movieId")));
                 }
@@ -146,9 +146,9 @@ public class WatchlistController {
         }
 
         Filter filter = new Filter.FilterBuilder()
-                .equals("userid", userId)
-                .equals("movieId", movieId)
-                .build();
+            .equals("userid", userId)
+            .equals("movieId", movieId)
+            .build();
 
         try {
             var deleteQuery = new DeleteQuery.DeleteQueryBuilder()

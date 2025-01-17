@@ -89,7 +89,7 @@
 
     // Fetch thông tin phim từ API
     async function fetchMovies(movieId) {
-        const URL = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}&language=vi-VN`;
+        const URL = `https://api.themoviedb.org/3/movie/${movieId}?api_key=${API_KEY}&language=${lang}`;
 
         try {
             const response = await fetch(URL);
